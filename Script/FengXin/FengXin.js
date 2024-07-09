@@ -69,7 +69,7 @@ async function main() {
         }
         console.log("————————————")
         console.log("查询积分")
-        let getintegral = await commonGet(`/api/account/getintegral?uid=${userId}`)
+        let getintegral = await commonGet(`/api/account/getintegral?uid=${userId}`,`uid=${userId}`)
         console.log(`拥有积分：${getintegral.data.num}\n`)
         notice += `用户：${phone} 积分：${getintegral.data.num}\n`
     }
@@ -188,8 +188,8 @@ async function generalKeyGet(url) {
     })
 }
 
-async function commonGet(url) {
-    let params = getparams();
+async function commonGet(url,body = '') {
+    let params = getparams(body);
     return new Promise(resolve => {
         const options = {
             url: `https://capp.phtion.com${url}`,
