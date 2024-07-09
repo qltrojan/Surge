@@ -5,6 +5,8 @@ let phone = ''
 let password = ''
 let token = ''
 let userId = ''
+let deviceCode = ''
+let signKey = 'nNo7464SYE6kUHjL'
 let notice = ''
 !(async () => {
     await main();
@@ -20,14 +22,23 @@ async function main() {
     Utils = await loadUtils();
     let arr = FengXin.split(" ");
     for (const item of arr) {
+        deviceCode = generateDeviceCode();
         phone = item.split("&")[0]
         password = item.split("&")[1]
         console.log(`用户：${phone}开始任务`)
+        console.log('获取登录signKey')
+        let generalKey = await generalKeyGet('/api/system/generalKey')
+        signKey = 'nNo7464SYE6kUHjL'+generalKey.data;
+        console.log(signKey)
         console.log("登录")
         let login = await loginPost('/api/applogin/sign-v2',{"password":password,"phone":phone,"jpushId":"","plat":1})
         console.log('登录结果：' + login.message)
         token = login.data.yxUser.token;
         userId = login.data.yxUser.uid;
+        console.log('获取用户signKey')
+        generalKey = await commonGet('/api/system/generalKey')
+        signKey = 'nNo7464SYE6kUHjL'+generalKey.data;
+        console.log(signKey)
         console.log("————————————")
         console.log("开始签到")
         let sign = await commonGet('/api/sign/daily-sign-v3')
@@ -78,7 +89,7 @@ async function loginPost(url,body) {
                 'plat': '1',
                 'time': params.time,
                 'version': '3.2.0',
-                'deviceCode': 'c7b93431a4a192a4',
+                'deviceCode': deviceCode,
                 'Content-Type': 'application/json; charset=utf-8',
                 'Connection': 'Keep-Alive',
                 'Accept-Encoding': 'gzip',
@@ -115,7 +126,7 @@ async function commonPost(url,body) {
                 'plat': '1',
                 'time': params.time,
                 'version': '3.2.0',
-                'deviceCode': 'c7b93431a4a192a4',
+                'deviceCode': deviceCode,
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Connection': 'Keep-Alive',
                 'Accept-Encoding': 'gzip',
@@ -124,6 +135,42 @@ async function commonPost(url,body) {
             body: body
         }
         $.post(options, async (err, resp, data) => {
+            try {
+                if (err) {
+                    console.log(`${JSON.stringify(err)}`)
+                    console.log(`${$.name} API请求失败，请检查网路重试`)
+                } else {
+                    await $.wait(2000)
+                    resolve(JSON.parse(data));
+                }
+            } catch (e) {
+                $.logErr(e, resp)
+            } finally {
+                resolve();
+            }
+        })
+    })
+}
+
+async function generalKeyGet(url) {
+    let time = new Date().getTime();
+    let sign = Utils.md5(`${time}${signKey}`)
+    return new Promise(resolve => {
+        const options = {
+            url: `https://capp.phtion.com${url}`,
+            headers : {
+                'token': token,
+                'sign': sign,
+                'plat': '1',
+                'time': time,
+                'version': '3.2.0',
+                'deviceCode': deviceCode,
+                'Connection': 'Keep-Alive',
+                'Accept-Encoding': 'gzip',
+                'User-Agent': `okhttp/4.12.0`,
+            }
+        }
+        $.get(options, async (err, resp, data) => {
             try {
                 if (err) {
                     console.log(`${JSON.stringify(err)}`)
@@ -152,7 +199,7 @@ async function commonGet(url) {
                 'plat': '1',
                 'time': params.time,
                 'version': '3.2.0',
-                'deviceCode': 'c7b93431a4a192a4',
+                'deviceCode': deviceCode,
                 'Connection': 'Keep-Alive',
                 'Accept-Encoding': 'gzip',
                 'User-Agent': `okhttp/4.12.0`,
@@ -178,7 +225,7 @@ async function commonGet(url) {
 
 function getloginParams() {
     let time = new Date().getTime();
-    let sign = Utils.md5(time + 'nNo7464SYE6kUHjLf65a3641')
+    let sign = Utils.md5(`${time}${signKey}`)
     return {"time": time, "sign": sign}
 }
 
@@ -194,8 +241,17 @@ function getparams(body = '') {
         body = sortedKeys.map(key => `${key}${result[key]}`).join('');
     }
     let time = new Date().getTime();
-    let sign = Utils.md5(body + time + userId + 'nNo7464SYE6kUHjLf65a3641')
+    let sign = Utils.md5(`${body}${time}${userId}${signKey}`)
     return {"time": time, "sign": sign}
+}
+
+function generateDeviceCode() {
+    let deviceCode = '';
+    const chars = 'abcdef0123456789';
+    for (let i = 0; i < 16; i++) {
+        deviceCode += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return deviceCode;
 }
 
 async function loadUtils() {
