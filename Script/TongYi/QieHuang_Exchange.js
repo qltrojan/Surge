@@ -39,17 +39,14 @@ async function main() {
                 }
                 console.log("触发滑块验证")
                 let data = reward.data.slideImgInfo;
-                let getXpos = await slidePost('huakuai.xzxxn7.live',{'gap': data.slidingImage, 'bg': data.backImage})
+                let getXpos = await slidePost({'slidingImage': data.slidingImage, 'backImage': data.backImage})
                 if (!getXpos) {
-                    getXpos = await slidePost('107.22.24.202:9999',{'gap': data.slidingImage, 'bg': data.backImage})
-                    if (!getXpos) {
-                        console.log("滑块验证服务不在运行，请联系作者")
-                        $.msg($.name, `滑块验证服务不在运行，请联系作者`);
-                        break
-                    }
+                    console.log("ddddocr服务异常")
+                    $.msg($.name, `ddddocr服务异常`);
+                    break
                 }
                 console.log(getXpos)
-                let checkUserCapCode = await commonPost(`/checkUserCapCode`,{"xpos":getXpos.x_coordinate})
+                let checkUserCapCode = await commonPost(`/checkUserCapCode`,{"xpos":getXpos.result})
                 console.log(`获得：调料包 * ${checkUserCapCode.data}`)
             } else if (reward.code == 0) {
                 slide = false;
@@ -150,11 +147,11 @@ async function commonPost(url,body) {
     })
 }
 
-async function slidePost(url,body) {
+async function slidePost(body) {
     return new Promise(resolve => {
         let  params = getSign({}, body);
         const options = {
-            url: `http://${url}/detect_slider_position`,
+            url: `https://ddddocr.xzxxn7.live/capcode`,
             headers: {
                 'Content-Type': 'application/json',
             },

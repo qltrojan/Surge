@@ -66,7 +66,13 @@ async function main() {
         console.log(sendSms.message)
         let image = await imageGet('/web/security/captcha_image')
         let captcha = await slidePost({"image": image})
-        sendSms = await passportPost('/web/security/send_security_code',`captcha=${captcha.position}&client_id=${clientId}&phone_number=${phone}`);
+        if (!captcha) {
+            console.log("ddddocr服务异常")
+            $.msg($.name, `ddddocr服务异常`);
+            return
+        }
+        console.log(getXpos)
+        sendSms = await passportPost('/web/security/send_security_code',`captcha=${captcha.result}&client_id=${clientId}&phone_number=${phone}`);
         if (sendSms.code == 0) {
             console.log("发送成功")
         } else {
@@ -226,7 +232,7 @@ async function passportPost(url,body) {
 async function slidePost(body) {
     return new Promise(resolve => {
         const options = {
-            url: `http://ocr.xzxxn7.live/ddddOcr`,
+            url: `https://ddddocr.xzxxn7.live/classification`,
             headers: {
                 'Content-Type': 'application/json',
             },

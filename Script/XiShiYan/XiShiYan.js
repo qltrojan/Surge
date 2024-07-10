@@ -122,13 +122,14 @@ async function main() {
                 let captchaToken = captcha.data.token;
                 let secretKey = captcha.data.secretKey;
                 console.log(`秘钥：${secretKey}`)
-                let getXpos = await slidePost('huakuai.xzxxn7.live',{'gap': jigsawImageUrl, 'bg': originalImageUrl})
+                let getXpos = await slidePost({'slidingImage': jigsawImageUrl, 'backImage': originalImageUrl})
                 if (!getXpos) {
-                    console.log('滑块验证失败')
+                    console.log("ddddocr服务异常")
+                    $.msg($.name, `ddddocr服务异常`);
                     continue;
                 }
-                console.log(JSON.stringify(getXpos))
-                let point = aesEncrypt(JSON.stringify({x: getXpos.x_coordinate, y: 5}), secretKey)
+                console.log(getXpos)
+                let point = aesEncrypt(JSON.stringify({x: getXpos.result, y: 5}), secretKey)
                 let check = await jinhuaPost(`/api/captcha/check`,{"activity_id":lotteryId,"module":"bigWheel","cap_token":captchaToken,"point":point})
                 console.log("验证滑块：" + check.message)
                 if (check.message == '操作成功') {
@@ -442,10 +443,10 @@ async function jinhuaGet(url,body) {
     })
 }
 
-async function slidePost(url,body) {
+async function slidePost(body) {
     return new Promise(resolve => {
         const options = {
-            url: `http://${url}/detect_slider_position`,
+            url: `https://ddddocr.xzxxn7.live/capcode`,
             headers: {
                 'Content-Type': 'application/json',
             },

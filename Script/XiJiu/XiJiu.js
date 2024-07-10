@@ -33,18 +33,16 @@ async function main() {
         console.log("开始每日验证")
         let getValidateInfo = await commonGet(`/garden/slide_validate/getValidateInfo`);
         if (getValidateInfo.data.status == 1) {
-            let gap = getValidateInfo.data.datas[1].split(",")[1];
-            let bg = getValidateInfo.data.datas[0].split(",")[1];
-            let getXpos = await slidePost('huakuai.xzxxn7.live',{'gap': gap, 'bg': bg})
+            let slidingImage = getValidateInfo.data.datas[1].split(",")[1];
+            let backImage = getValidateInfo.data.datas[0].split(",")[1];
+            let getXpos = await slidePost({'slidingImage': slidingImage, 'backImage': backImage})
             if (!getXpos) {
-                getXpos = await slidePost('107.22.24.202:9999',{'gap': getValidateInfo.data.datas[1], 'bg': getValidateInfo.data.datas[0]})
-                if (!getXpos) {
-                    console.log("滑块验证服务不在运行，请联系作者")
-                    $.msg($.name, `滑块验证服务不在运行，请联系作者`);
-                }
+                console.log("ddddocr服务异常")
+                $.msg($.name, `ddddocr服务异常`);
+                break
             }
             console.log(getXpos)
-            let toValidate = await commonPost(`/garden/slide_validate/toValidate`,JSON.stringify({"coordinate":getXpos.x_coordinate}));
+            let toValidate = await commonPost(`/garden/slide_validate/toValidate`,JSON.stringify({"coordinate":getXpos.result}));
             console.log(toValidate.msg)
         } else {
             console.log(getValidateInfo.msg)
@@ -419,10 +417,10 @@ async function commonGet(url) {
     })
 }
 
-async function slidePost(url,body) {
+async function slidePost(body) {
     return new Promise(resolve => {
         const options = {
-            url: `http://${url}/detect_slider_position`,
+            url: `https://ddddocr.xzxxn7.live/capcode`,
             headers: {
                 'Content-Type': 'application/json',
             },
