@@ -18,6 +18,10 @@ async function main() {
         console.log(`用户：${id}开始任务`)
         console.log('开始签到')
         let sign = await commonPost('/FlanSignInDaily/adds',{"date":getCurrentDate()})
+        if (sign.code == -1002) {
+            $.msg($.name, `用户：${id}`, `token已过期，请重新获取`);
+            continue
+        }
         if (sign.data.is_first == 1) {
             console.log(`签到成功，获得${sign.data.point_today}积分`)
         } else {

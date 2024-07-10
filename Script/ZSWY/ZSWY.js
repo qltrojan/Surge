@@ -122,7 +122,7 @@ async function main() {
                 let jigsawImageUrl = captcha.data.jigsawImageUrl;
                 let originalImageUrl = captcha.data.originalImageUrl;
                 console.log(`滑块：${jigsawImageUrl}`)
-                console.log(`背景：${jigsawImageUrl}`)
+                console.log(`背景：${originalImageUrl}`)
                 let captchaToken = captcha.data.token;
                 let secretKey = captcha.data.secretKey;
                 console.log(`秘钥：${secretKey}`)
