@@ -1,6 +1,7 @@
 const $ = new Env('发送验证码')
 let phone = ($.isNode() ? process.env.Common_Phone : $.getdata("Common_Phone")) || "";
 let appType = ($.isNode() ? process.env.Common_Type : $.getdata("Common_Type")) || "";
+const OCR_SERVER = ($.isNode() ? process.env.OCR_SERVER : $.getdata("OCR_SERVER")) || 'https://ddddocr.xzxxn7.live';
 let Utils = undefined;
 let signature_key = ''
 let tenantId = ''
@@ -232,7 +233,7 @@ async function passportPost(url,body) {
 async function slidePost(body) {
     return new Promise(resolve => {
         const options = {
-            url: `https://ddddocr.xzxxn7.live/classification`,
+            url: `${OCR_SERVER}/classification`,
             headers: {
                 'Content-Type': 'application/json',
             },

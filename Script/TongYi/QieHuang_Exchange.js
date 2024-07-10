@@ -1,6 +1,7 @@
 const $ = new Env("茄皇兑换");
 let token = '';
 let QieHuang_Body = ($.isNode() ? process.env.QieHuang_Body : $.getjson("QieHuang_Body")) || [];
+const OCR_SERVER = ($.isNode() ? process.env.OCR_SERVER : $.getdata("OCR_SERVER")) || 'https://ddddocr.xzxxn7.live';
 let QieHuang_Acc = ($.isNode() ? process.env.QieHuang_Acc : $.getdata("QieHuang_Acc")) || 1;
 let QieHuang_GiftId = ($.isNode() ? process.env.QieHuang_GiftId : $.getdata("QieHuang_GiftId")) || 112;
 let getList = true
@@ -151,7 +152,7 @@ async function slidePost(body) {
     return new Promise(resolve => {
         let  params = getSign({}, body);
         const options = {
-            url: `https://ddddocr.xzxxn7.live/capcode`,
+            url: `${OCR_SERVER}/capcode`,
             headers: {
                 'Content-Type': 'application/json',
             },

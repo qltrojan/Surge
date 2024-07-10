@@ -1,6 +1,7 @@
 const $ = new Env('习酒');
 const XiJiu = ($.isNode() ? process.env.XiJiu : $.getjson("XiJiu")) || [];
 const XiJiu_Exchange = ($.isNode() ? process.env.XiJiu_Exchange : $.getdata("XiJiu_Exchange")) || false;
+const OCR_SERVER = ($.isNode() ? process.env.OCR_SERVER : $.getdata("OCR_SERVER")) || 'https://ddddocr.xzxxn7.live';
 let cropType = [{"1":"高粱"},{"2":"小麦"}];
 let notice = '';
 !(async () => {
@@ -420,7 +421,7 @@ async function commonGet(url) {
 async function slidePost(body) {
     return new Promise(resolve => {
         const options = {
-            url: `https://ddddocr.xzxxn7.live/capcode`,
+            url: `${OCR_SERVER}/capcode`,
             headers: {
                 'Content-Type': 'application/json',
             },

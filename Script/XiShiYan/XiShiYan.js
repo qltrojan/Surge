@@ -1,5 +1,6 @@
 const $ = new Env('西施眼')
 const XiShiYan = ($.isNode() ? process.env.XiShiYan : $.getdata("XiShiYan")) || '';
+const OCR_SERVER = ($.isNode() ? process.env.OCR_SERVER : $.getdata("OCR_SERVER")) || 'https://ddddocr.xzxxn7.live';
 let Utils = undefined;
 let signature_key = ''
 let notice = ''
@@ -446,7 +447,7 @@ async function jinhuaGet(url,body) {
 async function slidePost(body) {
     return new Promise(resolve => {
         const options = {
-            url: `https://ddddocr.xzxxn7.live/capcode`,
+            url: `${OCR_SERVER}/capcode`,
             headers: {
                 'Content-Type': 'application/json',
             },
