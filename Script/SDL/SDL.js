@@ -53,6 +53,10 @@ async function getCookie() {
     if (!body.data || !body.data.phone) {
         return
     }
+    const appID = $request.headers["HH-APP"];
+    if (appID != 'wxb33ed03c6c715482') {
+        return
+    }
     const id = body.data.phone;
     const newData = {"id": id, "token": token};
     const index = SDL.findIndex(e => e.id == newData.id);
