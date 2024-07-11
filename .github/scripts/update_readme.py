@@ -7,7 +7,7 @@ def get_file_list():
     script_dir = "Script"
     file_list = []
     for root, dirs, files in os.walk(script_dir):
-        if os.path.basename(root) == "BackUp":
+        if "BackUp" in root.split(os.sep):
             continue
         for file in files:
             if file == "sendNotify.js":
