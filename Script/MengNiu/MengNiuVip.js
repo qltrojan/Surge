@@ -23,7 +23,7 @@ async function main() {
         console.log(`用户：${id}开始任务`)
         let list = await commonGet(`/user/center/protein/task/list?mobile=${id}&levelTemplateId=1&unionId=${unionId}`)
         if (!list) {
-            $.msg($.name, `用户：${id}`, `token已过期，请重新获取`);
+            await sendMsg(`用户：${id}\ntoken已过期，请重新获取`);
             continue
         }
         for (const task of list.data) {
@@ -58,7 +58,7 @@ async function main() {
         notice += `用户：${id} 拥有营养值: ${getMemberInfo.data.memberInfo.extInfo.data.proteinBalance}\n`
     }
     if (notice) {
-        $.msg($.name, '', notice);
+        await sendMsg(notice);
     }
 }
 
@@ -169,6 +169,15 @@ async function commonGet(url) {
             }
         })
     })
+}
+
+async function sendMsg(message) {
+    if ($.isNode()) {
+        let notify = require("./sendNotify");
+        await notify.sendNotify($.name, message);
+    } else {
+        $.msg($.name, '', message)
+    }
 }
 
 // prettier-ignore

@@ -24,7 +24,7 @@ async function main() {
         console.log('开始签到')
         let sign = await commonPost(`/kinder/interaction/signin/record/create`,{"activityId":activityId});
         if (!sign) {
-            $.msg($.name, `用户：${id}`, `token已过期，请重新获取`);
+            await sendMsg(`用户：${id}\ntoken已过期，请重新获取`);
             continue
         }
         if (sign.code == "1") {
@@ -51,7 +51,7 @@ async function main() {
         notice += `用户：${id} 拥有积分: ${getPoint.data.point}\n`
     }
     if (notice) {
-        $.msg($.name, '', notice);
+        await sendMsg(notice);
     }
 }
 
@@ -123,6 +123,15 @@ async function commonPost(url,body = {}) {
             }
         })
     })
+}
+
+async function sendMsg(message) {
+    if ($.isNode()) {
+        let notify = require("./sendNotify");
+        await notify.sendNotify($.name, message);
+    } else {
+        $.msg($.name, '', message)
+    }
 }
 
 // prettier-ignore

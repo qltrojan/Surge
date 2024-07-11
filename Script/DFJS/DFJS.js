@@ -48,7 +48,7 @@ async function main() {
         notice += `用户：${id} 拥有能量：${info.data.remaining_energies} 果子：${info.data.remaining_fruits}\n`
     }
     if (notice) {
-        $.msg($.name, '', notice);
+        await sendMsg(notice);
     }
 }
 
@@ -153,6 +153,15 @@ async function commonGet(url) {
             }
         })
     })
+}
+
+async function sendMsg(message) {
+    if ($.isNode()) {
+        let notify = require("./sendNotify");
+        await notify.sendNotify($.name, message);
+    } else {
+        $.msg($.name, '', message)
+    }
 }
 
 // prettier-ignore

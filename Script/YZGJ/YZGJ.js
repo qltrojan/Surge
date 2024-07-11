@@ -38,7 +38,7 @@ async function main() {
         }
     }
     if (notice) {
-        $.msg($.name, '', notice);
+        await sendMsg(notice);
     }
 }
 
@@ -149,6 +149,15 @@ async function commonGet() {
             }
         })
     })
+}
+
+async function sendMsg(message) {
+    if ($.isNode()) {
+        let notify = require("./sendNotify");
+        await notify.sendNotify($.name, message);
+    } else {
+        $.msg($.name, '', message)
+    }
 }
 
 // prettier-ignore

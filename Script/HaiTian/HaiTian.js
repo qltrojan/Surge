@@ -28,7 +28,7 @@ async function main() {
         uuid = item.uuid;
         let activityInfo = await commonGet('/sign/activity/code?activityCode=')
         if (activityInfo.code == 403) {
-            $.msg($.name, `用户：${id}`, `token已过期，请重新获取`);
+            await sendMsg(`用户：${id}\ntoken已过期，请重新获取`);
             continue
         }
         let shareCode = await commonGet(`/lucky/task/share/code/${activityId}`)
@@ -44,7 +44,7 @@ async function main() {
         console.log('每日签到')
         let activityInfo = await commonGet('/sign/activity/code?activityCode=')
         if (activityInfo.code == 403) {
-            $.msg($.name, `用户：${id}`, `token已过期，请重新获取`);
+            await sendMsg(`用户：${id}\ntoken已过期，请重新获取`);
             continue
         }
         let memberInfo = await commonGet(`/sign/activity/member/info?activityCode=${activityInfo.activity_code}`)
@@ -73,7 +73,7 @@ async function main() {
         let articleId = list.data.rows[0].id
         let adComment = await cmallwapPost('/haday/wx/comment/add',{"blogId":articleId,"comment":"每天一条走心评论。。。","pcommentId":"","pcommentUserId":"","pcommentUserName":"","pparentId":""})
         if (adComment.statusCode == 403) {
-            $.msg($.name, `用户：${id}`, `hadayToken已过期，请重新获取`);
+            await sendMsg(`用户：${id}\nhadayToken已过期，请重新获取`);
             continue
         }
         console.log(adComment.errorMsg)
@@ -133,7 +133,7 @@ async function main() {
         notice += `用户：${id} 拥有积分: ${points.consum_point}\n`
     }
     if (notice) {
-        $.msg($.name, '', notice);
+        await sendMsg(notice);
     }
 }
 
@@ -451,6 +451,15 @@ async function cmallwapPost(url, body) {
             }
         })
     })
+}
+
+async function sendMsg(message) {
+    if ($.isNode()) {
+        let notify = require("./sendNotify");
+        await notify.sendNotify($.name, message);
+    } else {
+        $.msg($.name, '', message)
+    }
 }
 
 // prettier-ignore

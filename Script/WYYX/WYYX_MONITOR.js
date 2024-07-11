@@ -14,7 +14,7 @@ async function main() {
     for (const packet of index.data.pointExVirtualAct.actPackets) {
         console.log(packet.title);
         if (packet.title.includes('礼品卡')) {
-            $.msg($.name, time);
+            await sendMsg(time);
             break
         }
     }
@@ -55,6 +55,15 @@ async function commonPost(url,body = '') {
             }
         })
     })
+}
+
+async function sendMsg(message) {
+    if ($.isNode()) {
+        let notify = require("./sendNotify");
+        await notify.sendNotify($.name, message);
+    } else {
+        $.msg($.name, '', message)
+    }
 }
 
 // prettier-ignore

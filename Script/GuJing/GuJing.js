@@ -20,7 +20,7 @@ async function main() {
         console.log("——————")
         let login = await commonPost("/login/info", {"belongToId":1,"memberId":memberId});
         if (!(login.code && login.code == 200)) {
-            $.msg($.name, `用户：${memberId}`, `token已过期，请重新获取`);
+            await sendMsg(`用户：${memberId}\ntoken已过期，请重新获取`);
             continue
         }
         console.log(login.chnDesc)
@@ -60,7 +60,7 @@ async function main() {
                 if (name.includes("积分") || name.includes("谢谢惠顾")) {
                     console.log(name)
                 } else {
-                    $.msg($.name, `用户：${memberId}`, `抽奖获得: ${name}`);
+                    await sendMsg(`用户：${memberId}\n抽奖获得: ${name}`);
                 }
             }
         } else {
@@ -76,7 +76,7 @@ async function main() {
                 if (name.includes("积分") || name.includes("谢谢惠顾")) {
                     console.log(name)
                 } else {
-                    $.msg($.name, `用户：${memberId}`, `抽奖获得: ${name}`);
+                    await sendMsg(`用户：${memberId}\n抽奖获得: ${name}`);
                 }
             }
         } else {
@@ -91,7 +91,7 @@ async function main() {
         await $.wait(5000);
     }
     if (notice) {
-        $.msg($.name, '', notice);
+        await sendMsg(notice);
     }
 }
 
@@ -192,6 +192,15 @@ async function commonGet(url) {
             }
         })
     })
+}
+
+async function sendMsg(message) {
+    if ($.isNode()) {
+        let notify = require("./sendNotify");
+        await notify.sendNotify($.name, message);
+    } else {
+        $.msg($.name, '', message)
+    }
 }
 
 // prettier-ignore

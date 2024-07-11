@@ -21,7 +21,7 @@ async function main() {
         console.log('开始签到')
         let sign = await commonPost(`/user/${userId}/sign-activity/23/sign`);
         if (sign.code == 401) {
-            $.msg($.name, `用户：${id}`, `token已过期，请重新获取`);
+            await sendMsg(`用户：${id}\ntoken已过期，请重新获取`);
             continue
         }
         if (sign.error) {
@@ -37,7 +37,7 @@ async function main() {
             let draw = await commonPost(`/user/${userId}/draw-activities/42/draw`);
             console.log(`抽奖获得：${draw.data.record.desc}`)
             if (draw.data.record.expend_type == 'entity') {
-                $.msg($.name, `用户：${id}`, `抽奖获得：${draw.data.record.desc}`);
+                await sendMsg(`用户：${id}\n抽奖获得: ${draw.data.record.desc}`);
             }
         }
         console.log("————————————")
@@ -66,7 +66,7 @@ async function main() {
         notice += `用户：${id} 拥有积分: ${getPoint.data.user.credit}\n`
     }
     if (notice) {
-        $.msg($.name, '', notice);
+        await sendMsg(notice);
     }
 }
 
@@ -180,6 +180,15 @@ async function commonGet(url) {
             }
         })
     })
+}
+
+async function sendMsg(message) {
+    if ($.isNode()) {
+        let notify = require("./sendNotify");
+        await notify.sendNotify($.name, message);
+    } else {
+        $.msg($.name, '', message)
+    }
 }
 
 // prettier-ignore

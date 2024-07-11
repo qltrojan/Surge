@@ -24,7 +24,7 @@ async function main() {
         console.log("开始签到")
         let sign = await commonPost("/member/Signin/sign",'from=miniprogram_index');
         if (sign.err == 4013) {
-            $.msg($.name, `用户：${id}`, `token已过期，请重新获取`);
+            await sendMsg(`用户：${id}\ntoken已过期，请重新获取`);
             continue
         }
         console.log(sign.msg)
@@ -39,7 +39,7 @@ async function main() {
             let getXpos = await slidePost({'slidingImage': slidingImage, 'backImage': backImage})
             if (!getXpos) {
                 console.log("ddddocr服务异常")
-                $.msg($.name, `ddddocr服务异常`);
+                await sendMsg('ddddocr服务异常');
                 break
             }
             console.log(getXpos)
@@ -80,14 +80,14 @@ async function main() {
                             //高粱
                             let seed = await commonPost(`/garden/sorghum/seed`,JSON.stringify({"id":land.id,"type":1}))
                             if (seed.err == 61010) {
-                                $.msg($.name, `用户：${id}`, seed.msg);
+                                await sendMsg(`用户：${id}\n${seed.msg}`);
                             }
                             console.log(seed.msg)
                         } else {
                             //小麦
                             let seed = await commonPost(`/garden/sorghum/seed`,JSON.stringify({"id":land.id,"type":2}))
                             if (seed.err == 61010) {
-                                $.msg($.name, `用户：${id}`, seed.msg);
+                                await sendMsg(`用户：${id}\n${seed.msg}`);
                             }
                             console.log(seed.msg)
                         }
@@ -108,14 +108,14 @@ async function main() {
                         //高粱
                         let seed = await commonPost(`/garden/sorghum/seed`,JSON.stringify({"id":land.id,"type":1}))
                         if (seed.err == 61010) {
-                            $.msg($.name, `用户：${id}`, seed.msg);
+                            await sendMsg(`用户：${id}\n${seed.msg}`);
                         }
                         console.log(seed.msg)
                     } else {
                         //小麦
                         let seed = await commonPost(`/garden/sorghum/seed`,JSON.stringify({"id":land.id,"type":2}))
                         if (seed.err == 61010) {
-                            $.msg($.name, `用户：${id}`, seed.msg);
+                            await sendMsg(`用户：${id}\n${seed.msg}`);
                         }
                         console.log(seed.msg)
                     }
@@ -129,14 +129,14 @@ async function main() {
                         //高粱
                         let seed = await commonPost(`/garden/sorghum/seed`,JSON.stringify({"id":land.id,"type":1}))
                         if (seed.err == 61010) {
-                            $.msg($.name, `用户：${id}`, seed.msg);
+                            await sendMsg(`用户：${id}\n${seed.msg}`);
                         }
                         console.log(seed.msg)
                     } else {
                         //小麦
                         let seed = await commonPost(`/garden/sorghum/seed`,JSON.stringify({"id":land.id,"type":2}))
                         if (seed.err == 61010) {
-                            $.msg($.name, `用户：${id}`, seed.msg);
+                            await sendMsg(`用户：${id}\n${seed.msg}`);
                         }
                         console.log(seed.msg)
                     }
@@ -166,14 +166,14 @@ async function main() {
                         //高粱
                         let seed = await commonPost(`/garden/sorghum/seed`,JSON.stringify({"id":land.id,"type":1}))
                         if (seed.err == 61010) {
-                            $.msg($.name, `用户：${id}`, seed.msg);
+                            await sendMsg(`用户：${id}\n${seed.msg}`);
                         }
                         console.log(seed.msg)
                     } else {
                         //小麦
                         let seed = await commonPost(`/garden/sorghum/seed`,JSON.stringify({"id":land.id,"type":2}))
                         if (seed.err == 61010) {
-                            $.msg($.name, `用户：${id}`, seed.msg);
+                            await sendMsg(`用户：${id}\n${seed.msg}`);
                         }
                         console.log(seed.msg)
                     }
@@ -273,7 +273,7 @@ async function main() {
         notice += `用户：${id} 积分：${getMemberInfo.data.integration} 酒：${getMemberInfo.data.wine}\n`
     }
     if (notice) {
-        $.msg($.name, '', notice);
+        await sendMsg(notice);
     }
 }
 
@@ -442,6 +442,15 @@ async function slidePost(body) {
             }
         })
     })
+}
+
+async function sendMsg(message) {
+    if ($.isNode()) {
+        let notify = require("./sendNotify");
+        await notify.sendNotify($.name, message);
+    } else {
+        $.msg($.name, '', message)
+    }
 }
 
 // prettier-ignore

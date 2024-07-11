@@ -19,7 +19,7 @@ async function main() {
         console.log('开始签到')
         let sign = await commonGet('/v2.member.score_shop/signSub')
         if (sign.status == 10) {
-            $.msg($.name, `用户：${id}`, `token已过期，请重新获取`);
+            await sendMsg(`用户：${id}\ntoken已过期，请重新获取`);
             continue
         }
         if (sign.status == 0) {
@@ -42,7 +42,7 @@ async function main() {
         notice += `用户：${id} 拥有积分: ${home.data.score_val}\n`
     }
     if (notice) {
-        $.msg($.name, '', notice);
+        await sendMsg(notice);
     }
 }
 
@@ -152,6 +152,15 @@ function getCurrentMonth() {
     const year = currentDate.getFullYear();
     const month = String(currentDate.getMonth() + 1).padStart(2, '0');
     return `${year}-${month}`;
+}
+
+async function sendMsg(message) {
+    if ($.isNode()) {
+        let notify = require("./sendNotify");
+        await notify.sendNotify($.name, message);
+    } else {
+        $.msg($.name, '', message)
+    }
 }
 
 // prettier-ignore

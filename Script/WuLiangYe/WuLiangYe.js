@@ -19,7 +19,7 @@ async function main() {
         token = item.token;
         let info = await commonGet(`/mini/wly/user/info`);
         if (info.code == 201701) {
-            $.msg($.name, `用户：${id}`, `token已过期，请重新获取`);
+            await sendMsg(`用户：${id}\ntoken已过期，请重新获取`);
             continue
         }
         console.log(`用户名：${info.data.visitor.nick_name}`)
@@ -74,7 +74,7 @@ async function main() {
         notice += `用户：${info.data.visitor.nick_name} 拥有积分: ${info.data.member.points}\n`
     }
     if (notice) {
-        $.msg($.name, '', notice);
+        await sendMsg(notice);
     }
 }
 
@@ -140,6 +140,15 @@ async function commonGet(url) {
             }
         })
     })
+}
+
+async function sendMsg(message) {
+    if ($.isNode()) {
+        let notify = require("./sendNotify");
+        await notify.sendNotify($.name, message);
+    } else {
+        $.msg($.name, '', message)
+    }
 }
 
 // prettier-ignore

@@ -19,7 +19,7 @@ async function main() {
         console.log('开始签到')
         let sign = await commonPost('/coupon/auth/signIn', {"miniappId":159})
         if (sign.status == 401) {
-            $.msg($.name, `用户：${id}`, `token已过期，请重新获取`);
+            await sendMsg(`用户：${id}\ntoken已过期，请重新获取`);
             continue
         }
         if (sign.code == 200) {
@@ -40,7 +40,7 @@ async function main() {
         notice += `用户：${id} 拥有积分: ${info.data.currentScore}\n`
     }
     if (notice) {
-        $.msg($.name, '', notice);
+        await sendMsg(notice);
     }
 }
 
@@ -123,6 +123,15 @@ async function commonPost(url,body) {
             }
         })
     })
+}
+
+async function sendMsg(message) {
+    if ($.isNode()) {
+        let notify = require("./sendNotify");
+        await notify.sendNotify($.name, message);
+    } else {
+        $.msg($.name, '', message)
+    }
 }
 
 // prettier-ignore

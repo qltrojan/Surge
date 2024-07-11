@@ -25,7 +25,7 @@ async function main() {
     console.log('作者：@xzxxn777\n频道：https://t.me/xzxxn777\n群组：https://t.me/xzxxn7777\n自用机场推荐：https://xn--diqv0fut7b.com\n')
     if (!XiShiYan) {
         console.log("先去boxjs填写账号密码")
-        $.msg($.name, '先去boxjs填写账号密码');
+        await sendMsg('先去boxjs填写账号密码');
         return
     }
     Utils = await loadUtils();
@@ -126,7 +126,7 @@ async function main() {
                 let getXpos = await slidePost({'slidingImage': jigsawImageUrl, 'backImage': originalImageUrl})
                 if (!getXpos) {
                     console.log("ddddocr服务异常")
-                    $.msg($.name, `ddddocr服务异常`);
+                    await sendMsg('ddddocr服务异常');
                     continue;
                 }
                 console.log(getXpos)
@@ -211,7 +211,7 @@ async function main() {
         notice += `用户：${phone_number} 积分：${detail.data.rst.total_integral}\n`
     }
     if (notice) {
-        $.msg($.name, '', notice);
+        await sendMsg(notice);
     }
 }
 
@@ -601,6 +601,15 @@ async function loadUtils() {
             resolve(creatUtils())
         })
     })
+}
+
+async function sendMsg(message) {
+    if ($.isNode()) {
+        let notify = require("./sendNotify");
+        await notify.sendNotify($.name, message);
+    } else {
+        $.msg($.name, '', message)
+    }
 }
 
 // prettier-ignore

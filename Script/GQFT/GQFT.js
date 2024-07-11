@@ -39,7 +39,7 @@ async function main() {
                 $.setjson(arr, "GQFT");
             } else {
                 console.log(refresh.header.message)
-                $.msg($.name, `用户：${id}`, `token已过期，请重新获取`);
+                await sendMsg(`用户：${id}\ntoken已过期，请重新获取`);
                 continue
             }
         }
@@ -101,7 +101,7 @@ async function main() {
         notice += `用户：${id} 拥有积分: ${points.body.score}\n`
     }
     if (notice) {
-        $.msg($.name, '', notice);
+        await sendMsg(notice);
     }
 }
 
@@ -372,6 +372,15 @@ async function loadUtils() {
             resolve(creatUtils())
         })
     })
+}
+
+async function sendMsg(message) {
+    if ($.isNode()) {
+        let notify = require("./sendNotify");
+        await notify.sendNotify($.name, message);
+    } else {
+        $.msg($.name, '', message)
+    }
 }
 
 // prettier-ignore

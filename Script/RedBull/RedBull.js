@@ -18,7 +18,7 @@ async function main() {
         console.log(`用户：${id}开始任务`)
         let getMemberInfo = await commonPost("/user/member/info",{});
         if (getMemberInfo.status == 401) {
-            $.msg($.name, `用户：${id}`, `token已过期，请重新获取`);
+            await sendMsg(`用户：${id}\ntoken已过期，请重新获取`);
             continue
         }
         let memberId = getMemberInfo.data.memberId;
@@ -59,7 +59,7 @@ async function main() {
         notice += `用户：${id} 积分：${getMemberInfo.data.currentScore}\n`
     }
     if (notice) {
-        $.msg($.name, '', notice);
+        await sendMsg(notice);
     }
 }
 
@@ -220,6 +220,15 @@ async function rongyiPost(url,body = {}) {
             }
         })
     })
+}
+
+async function sendMsg(message) {
+    if ($.isNode()) {
+        let notify = require("./sendNotify");
+        await notify.sendNotify($.name, message);
+    } else {
+        $.msg($.name, '', message)
+    }
 }
 
 // prettier-ignore

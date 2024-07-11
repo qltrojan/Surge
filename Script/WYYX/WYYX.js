@@ -22,7 +22,7 @@ async function main() {
         let sign = await weChatGet(`/act-attendance/att/v3/sign?csrf_token=${token}&__timestamp=${new Date().getTime()}&`);
         console.log(sign.msg)
         if(sign.code == 401){
-            $.msg($.name, `用户：${userId}`, `cookie已过期，请重新获取`);
+            await sendMsg(`用户：${userId}\ncookie已过期，请重新获取`);
             continue
         }
         //app任务
@@ -71,7 +71,7 @@ async function main() {
         notice += `用户：${userId} 拥有积分: ${getPoint.data.points} 礼品卡: ${giftCard.data.balance}\n`
     }
     if (notice) {
-        $.msg($.name, '', notice);
+        await sendMsg(notice);
     }
 }
 
@@ -268,6 +268,15 @@ async function commonGet(url) {
             }
         })
     })
+}
+
+async function sendMsg(message) {
+    if ($.isNode()) {
+        let notify = require("./sendNotify");
+        await notify.sendNotify($.name, message);
+    } else {
+        $.msg($.name, '', message)
+    }
 }
 
 // prettier-ignore

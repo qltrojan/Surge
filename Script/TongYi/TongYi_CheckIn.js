@@ -21,7 +21,7 @@ async function main() {
         console.log('开始签到')
         let sign = await commonPost('/pluginnormal/signin/sign',{"componentId":"001e5d2b-b0fe-4af8-9824-f2582b7b3f11"})
         if (sign.code == 5000) {
-            $.msg($.name, `用户：${memberId}`, `token已过期，请重新获取`);
+            await sendMsg(`用户：${memberId}\ntoken已过期，请重新获取`);
             continue
         }
         console.log(sign.msg)
@@ -43,7 +43,7 @@ async function main() {
         notice += `用户：${memberId} 拥有积分: ${myPoints.data}\n`
     }
     if (notice) {
-        $.msg($.name, '', notice);
+        await sendMsg(notice);
     }
 }
 
@@ -195,6 +195,15 @@ async function tuzhanPost(body) {
             }
         })
     })
+}
+
+async function sendMsg(message) {
+    if ($.isNode()) {
+        let notify = require("./sendNotify");
+        await notify.sendNotify($.name, message);
+    } else {
+        $.msg($.name, '', message)
+    }
 }
 
 // prettier-ignore

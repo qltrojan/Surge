@@ -25,7 +25,7 @@ async function main() {
             console.log(`用户：${id}开始签到`)
             let checkin = await commonGet(`checkinId=${checkinId}&app_id=${appId}&kdt_id=${kdtId}&access_token=${token}`,extraData);
             if (checkin.code == -1) {
-                $.msg($.name, `${name} 用户：${id}`, `token已过期，请重新获取`);
+                await sendMsg(`${name} 用户：${id}\ntoken已过期，请重新获取`);
                 continue
             }
             console.log(`签到结果:${checkin.msg}\n`)
@@ -33,7 +33,7 @@ async function main() {
         }
     }
     if (notice) {
-        $.msg($.name, '', notice);
+        await sendMsg(notice);
     }
 }
 
@@ -110,6 +110,15 @@ async function commonGet(url,extraData) {
             }
         })
     })
+}
+
+async function sendMsg(message) {
+    if ($.isNode()) {
+        let notify = require("./sendNotify");
+        await notify.sendNotify($.name, message);
+    } else {
+        $.msg($.name, '', message)
+    }
 }
 
 // prettier-ignore

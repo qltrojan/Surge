@@ -21,7 +21,7 @@ async function main() {
         console.log('开始签到')
         let sign = await commonGet('route=plugin.sign.Frontend.Modules.Sign.Controllers.sign.sign&')
         if (sign.msg == '请登录') {
-            $.msg($.name, `用户：${nickname}`, `cookie已过期，请重新获取`);
+            await sendMsg(`用户：${nickname}\ncookie已过期，请重新获取`);
             continue
         }
         if (sign.result == 1) {
@@ -65,7 +65,7 @@ async function main() {
         notice += `用户：${nickname} 拥有余额：${balance.data.credit2}\n`
     }
     if (notice) {
-        $.msg($.name, '', notice);
+        await sendMsg(notice);
     }
 }
 
@@ -131,6 +131,15 @@ async function commonGet(url) {
             }
         })
     })
+}
+
+async function sendMsg(message) {
+    if ($.isNode()) {
+        let notify = require("./sendNotify");
+        await notify.sendNotify($.name, message);
+    } else {
+        $.msg($.name, '', message)
+    }
 }
 
 // prettier-ignore

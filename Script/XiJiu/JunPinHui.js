@@ -14,7 +14,7 @@ async function main() {
     Utils = await loadUtils();
     if (!JunPinHui) {
         console.log("先去boxjs填写账号密码")
-        $.msg($.name, '先去boxjs填写账号密码');
+        await sendMsg('先去boxjs填写账号密码');
         return
     }
     let arr = JunPinHui.split(" ");
@@ -30,7 +30,7 @@ async function main() {
         const encrypted = encryptor.encrypt(pwd)
         let login = await commonPost('/api/login/phoneLogin', {"phone": phone, "channelCode": "xj_mall_wx_applet", "password": encrypted});
         if (login.code != 10000) {
-            $.msg($.name, `用户：${phone}`, login.message);
+            await sendMsg(`用户：${phone}\n${login.message}`);
             continue
         }
         token = login.data.token;
@@ -91,7 +91,7 @@ async function main() {
         notice += `用户：${phone} 积分：${getMemberInfo.data.points}\n`
     }
     if (notice) {
-        $.msg($.name, '', notice);
+        await sendMsg(notice);
     }
 }
 
@@ -199,6 +199,15 @@ async function loadUtils() {
             resolve(creatUtils())
         })
     })
+}
+
+async function sendMsg(message) {
+    if ($.isNode()) {
+        let notify = require("./sendNotify");
+        await notify.sendNotify($.name, message);
+    } else {
+        $.msg($.name, '', message)
+    }
 }
 
 // prettier-ignore

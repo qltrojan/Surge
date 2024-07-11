@@ -69,7 +69,7 @@ async function main() {
         let captcha = await slidePost({"image": image})
         if (!captcha) {
             console.log("ddddocr服务异常")
-            $.msg($.name, `ddddocr服务异常`);
+            await sendMsg(`ddddocr服务异常`);
             return
         }
         console.log(getXpos)
@@ -389,6 +389,15 @@ async function loadUtils() {
             resolve(creatUtils())
         })
     })
+}
+
+async function sendMsg(message) {
+    if ($.isNode()) {
+        let notify = require("./sendNotify");
+        await notify.sendNotify($.name, message);
+    } else {
+        $.msg($.name, '', message)
+    }
 }
 
 // prettier-ignore

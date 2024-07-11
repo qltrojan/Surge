@@ -21,7 +21,7 @@ async function main() {
         console.log("开始签到")
         let signMainInfo = await commonPost("/onecrm/mactivity/sign/misc/sign/activity/c/signMainInfo",{"appid":"wx532ecb3bdaaf92f9","basicInfo":{"vid":6013753979957,"vidType":2,"bosId":4020112618957,"productId":146,"productInstanceId":3168798957,"productVersionId":"14026","merchantId":2000020692957,"tcode":"weimob","cid":176205957},"extendInfo":{"wxTemplateId":7526,"childTemplateIds":[{"customId":90004,"version":"crm@0.1.11"},{"customId":90002,"version":"ec@42.3"},{"customId":90006,"version":"hudong@0.0.201"},{"customId":90008,"version":"cms@0.0.419"}],"analysis":[],"quickdeliver":{"enable":false},"bosTemplateId":1000001420,"youshu":{"enable":false},"source":1,"channelsource":5,"refer":"onecrm-signgift","mpScene":1089},"queryParameter":{"tracePromotionId":"100039234","tracepromotionid":"100039234"},"i18n":{"language":"zh","timezone":"8"},"pid":"4020112618957","storeId":"0","customInfo":{"source":0,"wid":11068728376},"tracePromotionId":"100039234","tracepromotionid":"100039234"})
         if (signMainInfo.errcode == 1041) {
-            $.msg($.name, `用户：${memberId}`, `token已过期，请重新获取`);
+            await sendMsg(`用户：${memberId}\ntoken已过期，请重新获取`);
             continue
         }
         if (signMainInfo.data.hasSign) {
@@ -70,7 +70,7 @@ async function main() {
         notice += `用户：${memberId} 拥有积分: ${getSimpleAccountInfo.data.totalPoint}\n`
     }
     if (notice) {
-        $.msg($.name, '', notice);
+        await sendMsg(notice);
     }
 }
 
@@ -89,7 +89,7 @@ async function lottery(body) {
                 if (name.includes("积分")) {
                     console.log(name)
                 } else {
-                    $.msg($.name, `用户：${memberId}`, `抽奖获得: ${name}`);
+                    await sendMsg(`用户：${memberId}\n抽奖获得: ${name}`);
                 }
             }
         }
@@ -159,7 +159,7 @@ async function collectCards(activityId, body) {
                 let consumerCards = await commonPost("/interactive/qianxi/amasscard/api/consumerCards",{"appid":"wx532ecb3bdaaf92f9","basicInfo":{"vid":6013753979957,"vidType":2,"bosId":4020112618957,"productId":165646,"productInstanceId":3169913957,"productVersionId":"16233","merchantId":2000020692957,"tcode":"weimob","cid":176205957},"extendInfo":{"wxTemplateId":7526,"analysis":[],"bosTemplateId":1000001420,"childTemplateIds":[{"customId":90004,"version":"crm@0.1.11"},{"customId":90002,"version":"ec@42.3"},{"customId":90006,"version":"hudong@0.0.201"},{"customId":90008,"version":"cms@0.0.419"}],"quickdeliver":{"enable":false},"youshu":{"enable":false},"source":1,"channelsource":5,"refer":"hd-card-home","mpScene":1256},"queryParameter":{"tracePromotionId":"100076753","tracepromotionid":"100076753"},"i18n":{"language":"zh","timezone":"8"},"pid":"4020112618957","storeId":"0","activityId":activityId,"source":1,"prizeId":prize.prizeId,"_version":"2.9.2","appletVersion":280,"_transformBasicInfo":true,"v":"76e04a82cc9efce6e19336bfddab891410029744","operationSource":4,"tracePromotionId":"100076753","tracepromotionid":"100076753","vid":6013753979957,"vidType":2,"bosId":4020112618957,"productId":165646,"productInstanceId":3169913957,"productVersionId":"16233","merchantId":2000020692957,"tcode":"weimob","cid":176205957,"vidTypes":[2],"openid":"oBk224m4im1J9PnLUe8AMagujqgM"})
                 console.log(consumerCards)
                 if (consumerCards.errcode == 0) {
-                    $.msg($.name, `用户：${memberId}`, `兑换${prize.prizeName}成功！`);
+                    await sendMsg(`用户：${memberId}\n兑换${prize.prizeName}成功！`);
                 } else {
                     console.log(consumerCards.errmsg)
                 }
@@ -170,7 +170,7 @@ async function collectCards(activityId, body) {
                         let consumerCards = await commonPost("/interactive/qianxi/amasscard/api/consumerCards",{"appid":"wx532ecb3bdaaf92f9","basicInfo":{"vid":6013753979957,"vidType":2,"bosId":4020112618957,"productId":165646,"productInstanceId":3169913957,"productVersionId":"16233","merchantId":2000020692957,"tcode":"weimob","cid":176205957},"extendInfo":{"wxTemplateId":7526,"analysis":[],"bosTemplateId":1000001420,"childTemplateIds":[{"customId":90004,"version":"crm@0.1.11"},{"customId":90002,"version":"ec@42.3"},{"customId":90006,"version":"hudong@0.0.201"},{"customId":90008,"version":"cms@0.0.419"}],"quickdeliver":{"enable":false},"youshu":{"enable":false},"source":1,"channelsource":5,"refer":"hd-card-home","mpScene":1256},"queryParameter":{"tracePromotionId":"100076753","tracepromotionid":"100076753"},"i18n":{"language":"zh","timezone":"8"},"pid":"4020112618957","storeId":"0","activityId":activityId,"source":1,"prizeId":prize.prizeId,"_version":"2.9.2","appletVersion":280,"_transformBasicInfo":true,"v":"76e04a82cc9efce6e19336bfddab891410029744","operationSource":4,"tracePromotionId":"100076753","tracepromotionid":"100076753","vid":6013753979957,"vidType":2,"bosId":4020112618957,"productId":165646,"productInstanceId":3169913957,"productVersionId":"16233","merchantId":2000020692957,"tcode":"weimob","cid":176205957,"vidTypes":[2],"openid":"oBk224m4im1J9PnLUe8AMagujqgM"})
                         console.log(consumerCards)
                         if (consumerCards.errcode == 0) {
-                            $.msg($.name, `用户：${memberId}`, `兑换${prize.prizeName}成功！`);
+                            await sendMsg(`用户：${memberId}\n兑换${prize.prizeName}成功！`);
                         } else {
                             console.log(consumerCards.errmsg)
                             break
@@ -274,6 +274,15 @@ async function commonPost(url,body) {
             }
         })
     })
+}
+
+async function sendMsg(message) {
+    if ($.isNode()) {
+        let notify = require("./sendNotify");
+        await notify.sendNotify($.name, message);
+    } else {
+        $.msg($.name, '', message)
+    }
 }
 
 // prettier-ignore
