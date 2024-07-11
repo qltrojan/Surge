@@ -10,6 +10,8 @@ def get_file_list():
         if os.path.basename(root) == "BackUp":
             continue
         for file in files:
+            if file == "sendNotify.js":
+                continue
             if file.endswith(".js"):  # 根据需要修改文件类型
                 file_path = os.path.join(root, file)
                 file_list.append(file_path)
