@@ -92,6 +92,10 @@ async function main() {
             let token = window[key];
             let lottery = await activityPost(`/hdtool/dy/doJoin?dpm=92261.3.1.0&activityId=${id}&_=${Date.now()}`,`actId=${id}&oaId=${id}&activityType=hdtool&consumerId=4134698352&token=${token}`)
             if (lottery.success) {
+                if (!lottery.orderId) {
+                    console.log(lottery.message)
+                    break
+                }
                 let orderId = lottery.orderId;
                 let result = 0;
                 while (result == 0) {
