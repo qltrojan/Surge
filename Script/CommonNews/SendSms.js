@@ -72,7 +72,7 @@ async function main() {
             await sendMsg(`ddddocr服务异常`);
             return
         }
-        console.log(getXpos)
+        console.log(captcha)
         sendSms = await passportPost('/web/security/send_security_code',`captcha=${captcha.result}&client_id=${clientId}&phone_number=${phone}`);
         if (sendSms.code == 0) {
             console.log("发送成功")
