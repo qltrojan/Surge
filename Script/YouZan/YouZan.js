@@ -1,5 +1,5 @@
 /**
- * cron "0 1 0,10 * * ?" YouZan.js
+ * cron "44 1,11 * * *" YouZan.js
  */
 const $ = new Env('有赞');
 const YouZan = ($.isNode() ? JSON.parse(process.env.YouZan) : $.getjson("YouZan")) || [];
