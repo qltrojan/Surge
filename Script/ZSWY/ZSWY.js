@@ -1,3 +1,8 @@
+/**
+ * cron "0 7,17 * * *" ZSWY.js
+ * export ZSWY="账号1&密码1 账号2&密码2"
+ * export OCR_SERVER="ocr服务"
+ */
 const $ = new Env('掌上武义')
 const ZSWY = ($.isNode() ? process.env.ZSWY : $.getdata("ZSWY")) || '';
 const OCR_SERVER = ($.isNode() ? process.env.OCR_SERVER : $.getdata("OCR_SERVER")) || 'https://ddddocr.xzxxn7.live';

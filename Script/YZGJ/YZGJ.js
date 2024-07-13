@@ -1,5 +1,9 @@
+/**
+ * cron "8 8,16 * * *" YZGJ.js
+ * export YZGJ='[{"id": "1", "cookie": "1"},{"id": "2", "cookie": "2"}]'
+ */
 const $ = new Env('云筑工匠')
-let YZGJ = ($.isNode() ? process.env.YZGJ : $.getjson("YZGJ")) || [];
+let YZGJ = ($.isNode() ? JSON.parse(process.env.YZGJ) : $.getjson("YZGJ")) || [];
 let cookie=''
 let notice = '';
 !(async () => {

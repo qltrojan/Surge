@@ -1,3 +1,7 @@
+/**
+ * cron "11 7,17 * * *" JunPinHui.js
+ * export JunPinHui="账号1&密码1 账号2&密码2"
+ */
 const $ = new Env('君品荟');
 const JunPinHui = ($.isNode() ? process.env.JunPinHui : $.getdata("JunPinHui")) || '';
 let appkey = 'OzVFDV3c6omb';

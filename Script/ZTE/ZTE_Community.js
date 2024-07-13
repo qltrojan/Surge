@@ -1,3 +1,7 @@
+/**
+ * cron "0 0-23/4 * * *" ZTE_Community.js
+ * export ZTE_Community="账号1&密码1 账号2&密码2"
+ */
 const $ = new Env('中兴社区');
 const ZTE_Community = ($.isNode() ? process.env.ZTE_Community : $.getdata("ZTE_Community")) || '';
 let phone, pwd, token = ''

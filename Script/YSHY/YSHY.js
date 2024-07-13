@@ -1,3 +1,7 @@
+/**
+ * cron "20 10,22 * * *" YSHY.js
+ * export YSHY='[{"id": "1", "token": "1"},{"id": "2", "token": "2"}]'
+ */
 const $ = new Env('仰韶会员');
 let YSHY = ($.isNode() ? JSON.parse(process.env.YSHY) : $.getjson("YSHY")) || [];
 let token=''

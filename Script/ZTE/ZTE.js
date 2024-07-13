@@ -1,3 +1,7 @@
+/**
+ * cron "33 1,19 * * *" ZTE.js
+ * export ZTE='[{"id": "1", "token": "1"},{"id": "2", "token": "2"}]'//token不带Bearer
+ */
 const $ = new Env('中兴手机商城');
 const ZTE = ($.isNode() ? JSON.parse(process.env.ZTE) : $.getjson("ZTE")) || [];
 let token = ''

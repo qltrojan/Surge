@@ -1,3 +1,8 @@
+/**
+ * cron "6 8,14,20 * * *" XiShiYan.js
+ * export XiShiYan="账号1&密码1 账号2&密码2"
+ * export OCR_SERVER="ocr服务"
+ */
 const $ = new Env('西施眼')
 const XiShiYan = ($.isNode() ? process.env.XiShiYan : $.getdata("XiShiYan")) || '';
 const OCR_SERVER = ($.isNode() ? process.env.OCR_SERVER : $.getdata("OCR_SERVER")) || 'https://ddddocr.xzxxn7.live';

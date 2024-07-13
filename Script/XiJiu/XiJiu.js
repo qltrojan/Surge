@@ -1,5 +1,11 @@
+/**
+ * cron "35 0-23/1 * * *" XiJiu.js
+ * export XiJiu='[{"id": "1", "token": "1"},{"id": "2", "token": "2"}]'
+ * export XiJiu_Exchange='true'//酒换积分
+ * export OCR_SERVER="ocr服务"
+ */
 const $ = new Env('习酒');
-const XiJiu = ($.isNode() ? process.env.XiJiu : $.getjson("XiJiu")) || [];
+const XiJiu = ($.isNode() ? JSON.parse(process.env.XiJiu) : $.getjson("XiJiu")) || [];
 const XiJiu_Exchange = ($.isNode() ? process.env.XiJiu_Exchange : $.getdata("XiJiu_Exchange")) || false;
 const OCR_SERVER = ($.isNode() ? process.env.OCR_SERVER : $.getdata("OCR_SERVER")) || 'https://ddddocr.xzxxn7.live';
 let cropType = [{"1":"高粱"},{"2":"小麦"}];

@@ -1,5 +1,10 @@
+/**
+ * cron "10 0,23 * * *" YongXin.js
+ * export YongXin='[{"userId": "1", "wxOpenId": "1", "aliPayOpenId": "1"},{"userId": "2", "wxOpenId": "2", "aliPayOpenId": "2"}]'
+ * export YongXin_ExchangeNum="1"//兑换次数
+ */
 const $ = new Env('富连e充');
-const YongXin = ($.isNode() ? process.env.YongXin : $.getjson("YongXin")) || [];
+const YongXin = ($.isNode() ? JSON.parse(process.env.YongXin) : $.getjson("YongXin")) || [];
 let YongXin_ExchangeNum = ($.isNode() ? process.env.YongXin_ExchangeNum : $.getdata("YongXin_ExchangeNum")) || 0;
 let notice = '';
 !(async () => {
