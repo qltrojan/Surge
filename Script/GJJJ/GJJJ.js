@@ -20,7 +20,7 @@ async function main() {
     for (const item of GJJJ) {
         id = item.id;
         openId = item.openId;
-        unionid = item.unionId;
+        unionId = item.unionId;
         console.log(`用户：${id}开始任务`)
         let login = await commonPost('/club-server/member/automaticLogin',{"identityType":"mobile","identityValue":id,"type2":"wechat-unionid","value2":"","source":"顾家小程序","contentName":"","openid":openId,"unionid":unionId})
         if (login.status === 200) {
