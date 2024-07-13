@@ -1,3 +1,7 @@
+/**
+ * cron "7 7 7 7 7" MengNiu.js
+ * export MengNiu='[{"userId": "1", "token": "1"},{"userId": "2", "token": "2"}]'
+ */
 const $ = new Env("蒙牛超级会员");
 let id = ''
 let notice = ''

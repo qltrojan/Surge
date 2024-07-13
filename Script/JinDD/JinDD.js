@@ -1,3 +1,7 @@
+/**
+ * cron "33 0,14 * * *" JinDD.js
+ * export JinDD='[{"id": "1", "cookie": "1", "nickname": "1"},{"id": "2", "cookie": "2", "nickname": "2"}]'
+ */
 const $ = new Env('金多多商城')
 const JinDD = ($.isNode() ? JSON.parse(process.env.JinDD) : $.getjson("JinDD")) || [];
 let cookie = ''

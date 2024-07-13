@@ -1,3 +1,7 @@
+/**
+ * cron "32 11,18 * * *" TongLu.js
+ * export TongLu="账号1&密码1 账号2&密码2"
+ */
 const $ = new Env('潇洒桐庐')
 const TongLu = ($.isNode() ? process.env.TongLu : $.getdata("TongLu")) || '';
 let Utils = undefined;

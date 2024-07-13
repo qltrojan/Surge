@@ -1,3 +1,7 @@
+/**
+ * cron "10 10,16,22 * * *" INSTAX.js
+ * export INSTAX='[{"id": "1", "userId": "1", "token": "1"},{"id": "2", "userId": "2", "token": "2"}]'
+ */
 const $ = new Env('富士instax玩拍由我俱乐部');
 let INSTAX = ($.isNode() ? JSON.parse(process.env.INSTAX) : $.getjson("INSTAX")) || [];
 let comments = ['冲呀','不错','赞','顶']

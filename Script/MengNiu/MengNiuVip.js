@@ -1,3 +1,7 @@
+/**
+ * cron "5 0,22 * * *" MengNiuVip.js
+ * export MengNiuVip='[{"id": "1", "token": "1", "encryptionkey": "1", "unionId": "1", "wxOpenId": "1", "secret":"1"},{"id": "2", "token": "2", "encryptionkey": "2", "unionId": "2", "wxOpenId": "2", "secret":"2"}]'
+ */
 const $ = new Env('蒙牛生活家会员中心')
 const MengNiuVip = ($.isNode() ? JSON.parse(process.env.MengNiuVip) : $.getjson("MengNiuVip")) || [];
 let token = ''

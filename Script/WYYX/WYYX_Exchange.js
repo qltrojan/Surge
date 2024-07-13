@@ -1,5 +1,11 @@
+/**
+ * cron "45 0,11,21 * * *" WYYX_Exchange.js
+ * export WYYX='[{"userId": "1", "cookie": "1", "token": "1"},{"userId": "2", "cookie": "2", "token": "2"}]'
+ * export WYYX_Acc='0'//兑换第一个账号
+ * export WYYX_Name='商品名称'//运行脚本查看
+ */
 const $ = new Env('网易严选-兑换');
-let WYYX = ($.isNode() ? process.env.WYYX : $.getjson("WYYX")) || [];
+let WYYX = ($.isNode() ? JSON.parse(process.env.WYYX) : $.getjson("WYYX")) || [];
 //默认第一个用户兑换
 let WYYX_Acc = ($.isNode() ? process.env.WYYX_Acc : $.getdata("WYYX_Acc")) || 0;
 let WYYX_Name = ($.isNode() ? process.env.WYYX_Name : $.getdata("WYYX_Name")) || '';

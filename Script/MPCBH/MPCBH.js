@@ -1,3 +1,7 @@
+/**
+ * cron "27 7,17 * * *" MPCBH.js
+ * export MPCBH='[{"id": "1", "token": "1"},{"id": "2", "token": "2"}]'
+ */
 const $ = new Env('毛铺草本荟')
 const MPCBH = ($.isNode() ? JSON.parse(process.env.MPCBH) : $.getjson("MPCBH")) || [];
 let token = ''

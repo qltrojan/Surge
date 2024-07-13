@@ -1,3 +1,7 @@
+/**
+ * cron "10 10,20 * * *" JDFLS.js
+ * export JDFLS='[{"id": "1", "memberId": "1", "projectId": "1", "token": "1"},{"id": "2", "memberId": "2", "projectId": "2", "token": "2"}]'
+ */
 const $ = new Env('健达福利社');
 let JDFLS = ($.isNode() ? JSON.parse(process.env.JDFLS) : $.getjson("JDFLS")) || [];
 let activityId = '230309eSgKaUHr2t'

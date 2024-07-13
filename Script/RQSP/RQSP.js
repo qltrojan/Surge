@@ -1,3 +1,7 @@
+/**
+ * cron "25 5,15 * * *" RQSP.js
+ * export RQSP='[{"id": "1", "phone": "1", "token": "1"},{"id": "2", "phone": "2", "token": "2"}]'
+ */
 const $ = new Env('日清食品体验馆');
 let RQSP = ($.isNode() ? JSON.parse(process.env.RQSP) : $.getjson("RQSP")) || [];
 const CryptoJS =  createCryptoJS();

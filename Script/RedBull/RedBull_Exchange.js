@@ -1,3 +1,9 @@
+/**
+ * cron "57 59 13 * * 5" RedBull_Exchange.js
+ * export RedBull='[{"id": "1", "openId": "1", "token": "1"},{"id": "2", "openId": "2", "token": "2"}]'
+ * export RedBull_Acc='0'//兑换第一个账号
+ * export RedBull_GiftId='203'//运行脚本查看
+ */
 const $ = new Env('红牛会员俱乐部兑换');
 const RedBull = ($.isNode() ? JSON.parse(process.env.RedBull) : $.getjson("RedBull")) || [];
 const RedBull_Acc = ($.isNode() ? process.env.RedBull_Acc : $.getdata("RedBull_Acc")) || 0;

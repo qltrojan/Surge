@@ -1,3 +1,7 @@
+/**
+ * cron "8 8,22 * * *" TKZX.js
+ * export TKZX='[{"unionId": "1", "openId": "1"},{"unionId": "2", "openId": "2"}]'
+ */
 const $ = new Env('泰康在线')
 const TKZX = ($.isNode() ? JSON.parse(process.env.TKZX) : $.getjson("TKZX")) || [];
 let CryptoJS = '';

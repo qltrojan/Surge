@@ -1,3 +1,7 @@
+/**
+ * cron "1 0,22 * * *" MengNiuNutritionist.js
+ * export MengNiuNutritionist='[{"id": "1", "token": "1", "encryptionkey": "1", "openId": "1", "storeId": "1", "totalId": "1"},{"id": "2", "token": "2", "encryptionkey": "2", "openId": "2", "storeId": "2", "totalId": "2"}]'
+ */
 const $ = new Env('蒙牛营养生活家')
 const MengNiuNutritionist = ($.isNode() ? JSON.parse(process.env.MengNiuNutritionist) : $.getjson("MengNiuNutritionist")) || [];
 let token,encryptionkey = ''

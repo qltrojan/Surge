@@ -1,3 +1,7 @@
+/**
+ * cron "11 11,18 * * *" MSWEFLS.js
+ * export MSWEFLS='[{"id": "1", "openId": "1"},{"id": "2", "openId": "2"}]'
+ */
 const $ = new Env('麦斯威尔福利社');
 let MSWEFLS = ($.isNode() ? JSON.parse(process.env.MSWEFLS) : $.getjson("MSWEFLS")) || [];
 let openId=''

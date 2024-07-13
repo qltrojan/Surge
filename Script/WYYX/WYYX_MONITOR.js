@@ -1,3 +1,7 @@
+/**
+ * cron "50 9 * * *" WYYX_MONITOR.js
+ * export WYYX='[{"userId": "1", "cookie": "1", "token": "1"},{"userId": "2", "cookie": "2", "token": "2"}]'
+ */
 const $ = new Env('网易严选-兑换时间');
 let WYYX = ($.isNode() ? JSON.parse(process.env.WYYX) : $.getjson("WYYX")) || [];
 let cookie=''

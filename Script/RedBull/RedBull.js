@@ -1,3 +1,7 @@
+/**
+ * cron "44 8,18 * * *" RedBull.js
+ * export RedBull='[{"id": "1", "openId": "1", "token": "1"},{"id": "2", "openId": "2", "token": "2"}]'
+ */
 const $ = new Env('红牛会员俱乐部');
 const RedBull = ($.isNode() ? JSON.parse(process.env.RedBull) : $.getjson("RedBull")) || [];
 let notice = '';

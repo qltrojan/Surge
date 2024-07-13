@@ -1,3 +1,7 @@
+/**
+ * cron "33 2,20 * * *" PSKJ.js
+ * export PSKJ='[{"id": "1", "token": "1"},{"id": "2", "token": "2"}]'
+ */
 const $ = new Env('攀升科技+')
 const PSKJ = ($.isNode() ? JSON.parse(process.env.PSKJ) : $.getjson("PSKJ")) || [];
 let token = ''

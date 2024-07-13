@@ -1,3 +1,7 @@
+/**
+ * cron "30 10,18 * * *" QingDaoNews.js
+ * export QingDaoNews="账号1&密码1 账号2&密码2"
+ */
 const $ = new Env('青岛新闻')
 let QingDaoNews = ($.isNode() ? process.env.QingDaoNews : $.getdata("QingDaoNews")) || '';
 let Utils = undefined;

@@ -1,3 +1,8 @@
+/**
+ * cron "25 2,20 * * *" IQOO.js
+ * export IQOO='[{"id": "1", "xVisitor": "1", "token": "1"},{"id": "2", "xVisitor": "2", "token": "2"}]'
+ * export IQOO_Create="true"//发帖
+ */
 const $ = new Env('IQOO社区')
 const crypto = createCryptoJS()
 const IQOO = ($.isNode() ? JSON.parse(process.env.IQOO) : $.getjson("IQOO")) || [];

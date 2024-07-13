@@ -1,3 +1,7 @@
+/**
+ * cron "19 8,19 * * *" SDL.js
+ * export SDL='[{"id": "1", "token": "1"},{"id": "2", "token": "2"}]'
+ */
 const $ = new Env('三得利')
 const SDL = ($.isNode() ? JSON.parse(process.env.SDL) : $.getjson("SDL")) || [];
 let token = ''

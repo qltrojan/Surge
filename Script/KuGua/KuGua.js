@@ -1,3 +1,7 @@
+/**
+ * cron "50 0,10 * * *" KuGua.js
+ * export KuGua='[{"id": "1", "openId": "1", "refreshToken": "1"},{"id": "2", "openId": "2", "refreshToken": "2"}]'
+ */
 const $ = new Env('酷瓜好物')
 const KuGua = ($.isNode() ? JSON.parse(process.env.KuGua) : $.getjson("KuGua")) || [];
 let token = ''
