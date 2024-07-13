@@ -1,3 +1,7 @@
+/**
+ * cron "49 4,14 * * *" ASTC.js
+ * export ASTC='[{"id":"1","openId":"1"},{"id":"2","openId":"2"}]'
+ */
 const $ = new Env('阿叔同城')
 const ASTC = ($.isNode() ? JSON.parse(process.env.ASTC) : $.getjson("ASTC")) || [];
 let openId = ''

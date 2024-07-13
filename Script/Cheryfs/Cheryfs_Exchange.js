@@ -1,3 +1,9 @@
+/**
+ * cron "59 17 * * *" Cheryfs_Exchange.js
+ * export Cheryfs='[{"accountId":"1"},{"accountId":"2"}]'
+ * export Cheryfs_Acc="0"//兑换第一个账号
+ * export Cheryfs_GIFTID="754492665391370240"//运行脚本查看
+ */
 const $ = new Env('好奇车生活兑换')
 const Cheryfs = ($.isNode() ? JSON.parse(process.env.Cheryfs) : $.getjson("Cheryfs")) || [];
 let Cheryfs_Acc = ($.isNode() ? process.env.Cheryfs_Acc : $.getdata("Cheryfs_Acc")) || 0;

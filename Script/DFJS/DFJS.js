@@ -1,3 +1,7 @@
+/**
+ * cron "43 11,21 * * *" DFJS.js
+ * export DFJS='[{"id":"1","token":"1"},{"id":"2","token":"2"}]'
+ */
 const $ = new Env('东方棘市')
 const DFJS = ($.isNode() ? JSON.parse(process.env.DFJS) : $.getjson("DFJS")) || [];
 let token = ''

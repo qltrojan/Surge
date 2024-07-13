@@ -1,3 +1,10 @@
+/**
+ * cron "7 7 7 7 7" ResetPassword.js
+ * export Common_Phone="手机号"
+ * export Common_Type=""//XiShiYan,WangChao,XinJiangBei,TongLu,ZSWY,SHPJ
+ * export Common_smsCode="验证码"
+ * export Common_Password="密码"
+ */
 const $ = new Env('重置密码')
 let phone = ($.isNode() ? process.env.Common_Phone : $.getdata("Common_Phone")) || "";
 let appType = ($.isNode() ? process.env.Common_Type : $.getdata("Common_Type")) || "";

@@ -1,5 +1,9 @@
+/**
+ * cron "0 8,20 * * *" Github.js
+ * export Github_Repos='[{"name": "xzxxn7", "url": "https://github.com/xzxxn777/Surge"},{"name": "xzxxn777", "url": "https://github.com/xzxxn777/Surge"}]'
+ */
 const $ = new Env('Github监控')
-const Github_Repos = ($.isNode() ? (process.env.Github_Repos) : $.getjson("Github_Repos")) || [];
+const Github_Repos = ($.isNode() ? JSON.parse(process.env.Github_Repos) : $.getjson("Github_Repos")) || [];
 const parser = {
     commits: new RegExp(/^https:\/\/github.com\/([\w|-]+)\/([\w|-]+)(\/tree\/([\w|-]+))?$/),
     releases: new RegExp(/^https:\/\/github.com\/([\w|-]+)\/([\w|-]+)\/releases/),

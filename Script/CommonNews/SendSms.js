@@ -1,3 +1,9 @@
+/**
+ * cron "7 7 7 7 7" SendSms.js
+ * export Common_Phone="手机号"
+ * export Common_Type=""//XiShiYan,WangChao,XinJiangBei,TongLu,ZSWY,SHPJ
+ * export OCR_SERVER="ocr服务"
+ */
 const $ = new Env('发送验证码')
 let phone = ($.isNode() ? process.env.Common_Phone : $.getdata("Common_Phone")) || "";
 let appType = ($.isNode() ? process.env.Common_Type : $.getdata("Common_Type")) || "";

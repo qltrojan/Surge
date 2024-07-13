@@ -1,3 +1,7 @@
+/**
+ * cron "28 9,21 * * *" FengXin.js
+ * export FengXin="账号1&密码1 账号2&密码2"
+ */
 const $ = new Env('丰信客户端')
 const FengXin = ($.isNode() ? process.env.FengXin : $.getdata("FengXin")) || '';
 let Utils = undefined;

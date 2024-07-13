@@ -1,3 +1,7 @@
+/**
+ * cron "43 1,21 * * *" HGDS.js
+ * export HGDS='[{"id": "1", "token": "1", "sessionKey": "1", "unionid": "1", "socialhubId": "1"},{"id": "2", "token": "2", "sessionKey": "2", "unionid": "2", "socialhubId": "2"}]'
+ */
 const $ = new Env('哈根达斯')
 let sessionKey = '', unionid = '',socialhubId = '', token = ''
 const HGDS = ($.isNode() ? JSON.parse(process.env.HGDS) : $.getjson("HGDS")) || [];

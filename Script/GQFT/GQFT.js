@@ -1,3 +1,7 @@
+/**
+ * cron "33 6,16,23 * * *" GQFT.js
+ * export GQFT='[{"id":"1","token":"1","refreshToken":"1"},{"id":"2","token":"2","refreshToken":"2"}]'
+ */
 const $ = new Env('广汽丰田')
 const GQFT = ($.isNode() ? JSON.parse(process.env.GQFT) : $.getjson("GQFT")) || [];
 let Utils = undefined;

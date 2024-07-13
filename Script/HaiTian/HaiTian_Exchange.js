@@ -1,3 +1,9 @@
+/**
+ * cron "58 59 16 * * 4" HaiTian_Exchange.js
+ * export HaiTian='[{"id":"1","token":"1","hadayToken":"1","uuid":"1"},{"id":"2","token":"2","hadayToken":"2","uuid":"2"}]'
+ * export HaiTian_Acc='0'//兑换第一个账号
+ * export HaiTian_GiftId='0'//运行脚本查看
+ */
 const $ = new Env('海天美味馆兑换')
 const HaiTian = ($.isNode() ? JSON.parse(process.env.HaiTian) : $.getjson("HaiTian")) || [];
 const HaiTian_Acc = ($.isNode() ? process.env.HaiTian_Acc : $.getdata("HaiTian_Acc")) || 0;

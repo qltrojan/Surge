@@ -1,3 +1,7 @@
+/**
+ * cron "54 7,15 * * *" Cheryfs.js
+ * export Cheryfs='[{"accountId":"1"},{"accountId":"2"}]'
+ */
 const $ = new Env('好奇车生活')
 const Cheryfs = ($.isNode() ? JSON.parse(process.env.Cheryfs) : $.getjson("Cheryfs")) || [];
 let accountId = ''

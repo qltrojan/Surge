@@ -1,5 +1,9 @@
+/**
+ * cron "5 8,12,18,20 * * *" GuJing.js
+ * export GuJing='[{"memberId":"1","token":"1"},{"memberId":"2","token":"2"}]'
+ */
 const $ = new Env('古井贡酒');
-const GuJing = ($.isNode() ? process.env.GuJing : $.getjson("GuJing")) || [];
+const GuJing = ($.isNode() ? JSON.parse(process.env.GuJing) : $.getjson("GuJing")) || [];
 let notice = ''
 !(async () => {
     if (typeof $request != "undefined") {

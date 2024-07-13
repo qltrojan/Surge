@@ -1,3 +1,7 @@
+/**
+ * cron "43 2,20 * * *" HaiTian.js
+ * export HaiTian='[{"id":"1","token":"1","hadayToken":"1","uuid":"1"},{"id":"2","token":"2","hadayToken":"2","uuid":"2"}]'
+ */
 const $ = new Env('海天美味馆')
 const HaiTian = ($.isNode() ? JSON.parse(process.env.HaiTian) : $.getjson("HaiTian")) || [];
 let shareCodeArr = []
