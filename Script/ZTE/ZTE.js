@@ -6,7 +6,7 @@ const $ = new Env('中兴手机商城');
 const ZTE = ($.isNode() ? JSON.parse(process.env.ZTE) : $.getjson("ZTE")) || [];
 let token = ''
 let  id = ''
-//let teamIdArr = ['a03e677094ec0c611dc790c85ac38bb8']
+let teamIdArr = ["34e44372e6edfda4e670a8f05b81d7c7","14fa18c6c9b733043812ff5289fb2e6b","e01f22af603612704e0b049104e960d5"]
 let notice = '';
 !(async () => {
 
@@ -19,22 +19,25 @@ let notice = '';
 
 async function main() {
     console.log('作者：@xzxxn777\n频道：https://t.me/xzxxn777\n群组：https://t.me/xzxxn7777\n自用机场推荐：https://xn--diqv0fut7b.com\n')
-    // for (const item of ZTE) {
-    //     id = item.id;
-    //     token = item.token;
-    //     let info = await commonGet(`method=member.index&format=json&v=v1`);
-    //     if (info.data.check_token) {
-    //         $.msg($.name, `用户：${id}`, `token已过期，请重新获取`);
-    //         continue
-    //     }
-    //     let create = await commonGet('st_id=12&openid=1&tmplIds=%5B%22dNjQkGU9Q5bGelME3VKu3WvLq8SjAK6zvO8TqmVBNQY%22%2C%22z8iz5MrEFo7ebe5JfG8hnYhBdBizmlyRYYB3Dn92VE4%22%2C%22iUPjQBzMS5qa2gbluX5LSBT4pY_ZJfHaRjHmU4eqjz8%22%5D&method=shareTeaming.create.team&format=json&v=v1');
-    //     if (create.errorcode == 0) {
-    //         console.log(`创建队伍成功：${create.data.team_id}`)
-    //         teamIdArr.push(create.data.team_id)
-    //     } else {
-    //         console.log(create.msg)
-    //     }
-    // }
+    for (const item of ZTE) {
+        id = item.id;
+        token = item.token;
+        let info = await commonGet(`method=member.index&format=json&v=v1`);
+        if (info.data.check_token) {
+            $.msg($.name, `用户：${id}`, `token已过期，请重新获取`);
+            continue
+        }
+        let create = await commonGet('st_id=14&openid=1&tmplIds=%5B%5D&method=shareTeaming.create.team&format=json&v=v1');
+        if (create.errorcode == 0) {
+            console.log(`创建队伍成功：${create.data.team_id}`)
+            teamIdArr.push(create.data.team_id)
+        } else {
+            console.log(create.msg)
+            let getTeamId = await commonGet(`st_id=14&method=shareTeaming.get.teamId&format=json&v=v1`);
+            console.log(`当前创建的队伍：${getTeamId.data.team_id}`)
+            teamIdArr.push(getTeamId.data.team_id)
+        }
+    }
     for (const item of ZTE) {
         id = item.id;
         token = item.token;
@@ -109,21 +112,21 @@ async function main() {
         // } else {
         //     console.log(prize.data.msg)
         // }
-        // console.log("————————————")
-        // console.log("组队")
-        // for (const teamId of teamIdArr) {
-        //     let teamInfo = await commonGet(`team_id=${teamId}&method=get.shareTeaming.teamInfo&format=json&v=v1`);
-        //     if (teamInfo.data.members_num < 4) {
-        //         let join = await commonGet(`st_id=12&openid=1&team_id=${teamId}&tmplIds=%5B%22dNjQkGU9Q5bGelME3VKu3WvLq8SjAK6zvO8TqmVBNQY%22%2C%22z8iz5MrEFo7ebe5JfG8hnYhBdBizmlyRYYB3Dn92VE4%22%2C%22iUPjQBzMS5qa2gbluX5LSBT4pY_ZJfHaRjHmU4eqjz8%22%5D&method=shareTeaming.join.team&format=json&v=v1`);
-        //         if (join.errorcode == 0) {
-        //             console.log(`加入成功`)
-        //         } else {
-        //             console.log(join.msg)
-        //         }
-        //     } else {
-        //         console.log(`队伍已满`)
-        //     }
-        // }
+        console.log("————————————")
+        console.log("组队")
+        for (const teamId of teamIdArr) {
+            let teamInfo = await commonGet(`team_id=${teamId}&method=get.shareTeaming.teamInfo&format=json&v=v1`);
+            if (teamInfo.data.members_num < 4) {
+                let join = await commonGet(`st_id=14&openid=1&team_id=${teamId}&tmplIds=st_id=14&openid=oCuYT0RwCL6WFFnHeNvuFumaJd_0&tmplIds=%5B%5D&method=shareTeaming.create.team&format=json&v=v1&method=shareTeaming.join.team&format=json&v=v1`);
+                if (join.errorcode == 0) {
+                    console.log(`加入成功`)
+                } else {
+                    console.log(join.msg)
+                }
+            } else {
+                console.log(`队伍已满`)
+            }
+        }
         console.log("————————————")
         console.log("积分查询")
         info = await commonGet(`method=member.index&format=json&v=v1`);
