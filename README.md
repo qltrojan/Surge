@@ -54,6 +54,7 @@
 | 掌上武义 | [ZSWY](https://github.com/xzxxn777/Surge/blob/main/Script/ZSWY/ZSWY.js) | ✅(2024/07/11) | ✅️ |
 | 中兴手机商城 | [ZTE](https://github.com/xzxxn777/Surge/blob/main/Script/ZTE/ZTE.js) | ✅(2024/07/11) | ✅️ |
 | 中兴社区 | [ZTE_Community](https://github.com/xzxxn777/Surge/blob/main/Script/ZTE/ZTE_Community.js) | ✅(2024/07/11) | ✅️ |
+| 顾家家居 | [GJJJ](https://github.com/xzxxn777/Surge/blob/main/Script/GJJJ/GJJJ.js) | ✅(2024/07/13) | ✅️ |
 
 ------
 ### [一键订阅boxjs](http://boxjs.com/#/sub/add/https://raw.githubusercontent.com/xzxxn777/Surge/main/xzxxn.json)
