@@ -1,5 +1,5 @@
 /**
- * cron 54 8,18 * * *
+ * cron: 54 8,18 * * *
  * export AnHuiTelecom='[{"id":"1","cookie":"1"},{"id":"2","cookie":"2"}]'
  */
 const $ = new Env('安徽电信')
