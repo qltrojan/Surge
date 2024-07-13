@@ -1,3 +1,7 @@
+/*
+cron "54 8,18 * * *"
+export AnHuiTelecom='[{"id":"1","cookie":"1"},{"id":"2","cookie":"2"}]'
+* */
 const $ = new Env('安徽电信')
 const AnHuiTelecom = ($.isNode() ? JSON.parse(process.env.AnHuiTelecom) : $.getjson("AnHuiTelecom")) || [];
 let cookie = ''
