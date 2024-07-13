@@ -12,6 +12,7 @@ let signatureSalt = "FR*r!isE5W"
 let phone_number = ''
 let password = ''
 let realname = ''
+let aliPay = ''
 let ua = ''
 let commonUa = ''
 let deviceId = ''
@@ -41,6 +42,7 @@ async function main() {
         phone_number = item.split("&")[0]
         password = item.split("&")[1]
         realname = item.split("&")[2]
+        aliPay = item.split("&")[3] || phone_number
         console.log(`用户：${phone_number}开始任务`)
         console.log("获取sessionId")
         let initSession = await commonPost('/api/account/init');
@@ -122,16 +124,16 @@ async function main() {
                                 result[arr[0]] = arr[1];
                             }
                             let recordId = result.recordId;
-                            if (realname) {
+                            if (realname && aliPay) {
                                 console.log("获取兑换key")
                                 key = await keyGet(`https://92261.activity-14.m.duiba.com.cn/activity/takePrizeNew?recordId=${recordId}&dbnewopen`)
                                 let getToken = await activityPost(`/ctoken/getToken.do`)
                                 eval(getToken.token);
                                 let token = window[key];
-                                let award = await activityPost(`/activity/doTakePrize`,`alipay=${phone_number}&realname=${encodeURI(realname)}&recordId=${recordId}&token=${token}`)
+                                let award = await activityPost(`/activity/doTakePrize`,`alipay=${aliPay}&realname=${encodeURI(realname)}&recordId=${recordId}&token=${token}`)
                                 console.log(award.message)
                             } else {
-                                console.log(`请填写真实姓名`)
+                                console.log(`请设置支付宝姓名和账号`)
                             }
                         }
                     }
