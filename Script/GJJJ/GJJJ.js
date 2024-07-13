@@ -59,7 +59,7 @@ async function main() {
         console.log("积分查询")
         let getPoint = await commonGet('/club-server/front/member/userCenterScore');
         console.log(`拥有积分: ${getPoint.data.point}\n`)
-        notice += `用户：${memberId} 拥有积分: ${getPoint.data.point}\n`
+        notice += `用户：${id} 拥有积分: ${getPoint.data.point}\n`
     }
     if (notice) {
         await sendMsg(notice);
