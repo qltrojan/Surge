@@ -1,9 +1,14 @@
+/**
+ * cron "5 10-22/2 * * *" QieHuang.js
+ * export QieHuang_Body='[{"wid": "1", "thirdId": "1"},{"wid": "2", "thirdId": "2"}]'
+ * export OCR_SERVER="ocr服务"
+ */
 const $ = new Env("茄皇");
 let token = '';
 let notice = ''
 let step = ["种植番茄","发育期","幼苗期","开花期","结果期","收获期"];
 let prizeType = [{"sun":"阳光"},{"dice":"烤包子"},{"gold":"调料包"}];
-let QieHuang_Body = ($.isNode() ? process.env.QieHuang_Body : $.getjson("QieHuang_Body")) || [];
+let QieHuang_Body = ($.isNode() ? JSON.parse(process.env.QieHuang_Body) : $.getjson("QieHuang_Body")) || [];
 const OCR_SERVER = ($.isNode() ? process.env.OCR_SERVER : $.getdata("OCR_SERVER")) || 'https://ddddocr.xzxxn7.live';
 let helpRole = ["1799683034534522880"],
     helpTask = ["1773742212391776256","1774452631353331712","1774636807295471616","1799682948108292096","1774096506474598400","1774644904452067328","1773739743086776320","1774091259082321920","1774092017642377216","1774092684184391680"];

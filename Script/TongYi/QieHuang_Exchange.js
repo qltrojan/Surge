@@ -1,6 +1,13 @@
+/**
+ * cron "7 7 7 7 7" QieHuang_Exchange.js
+ * export QieHuang_Body='[{"wid": "1", "thirdId": "1"},{"wid": "2", "thirdId": "2"}]'
+ * export OCR_SERVER="ocr服务"
+ * export QieHuang_Acc="1"//兑换第一个账号
+ * export QieHuang_GiftId="112"//运行脚本查看
+ */
 const $ = new Env("茄皇兑换");
 let token = '';
-let QieHuang_Body = ($.isNode() ? process.env.QieHuang_Body : $.getjson("QieHuang_Body")) || [];
+let QieHuang_Body = ($.isNode() ? JSON.parse(process.env.QieHuang_Body) : $.getjson("QieHuang_Body")) || [];
 const OCR_SERVER = ($.isNode() ? process.env.OCR_SERVER : $.getdata("OCR_SERVER")) || 'https://ddddocr.xzxxn7.live';
 let QieHuang_Acc = ($.isNode() ? process.env.QieHuang_Acc : $.getdata("QieHuang_Acc")) || 1;
 let QieHuang_GiftId = ($.isNode() ? process.env.QieHuang_GiftId : $.getdata("QieHuang_GiftId")) || 112;

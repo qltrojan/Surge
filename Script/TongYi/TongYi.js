@@ -1,3 +1,7 @@
+/**
+ * cron "25 8,12,18,20 * * *" TongYi.js
+ * export TongYi='[{"memberId": "1", "token": "1", "wid": "1", "openid": "1"},{"memberId": "2", "token": "2", "wid": "2", "openid": "2"}]'
+ */
 const $ = new Env('统一');
 const TongYi = ($.isNode() ? JSON.parse(process.env.TongYi) : $.getjson("TongYi")) || [];
 let TongYi_Help = ($.isNode() ? process.env.TongYi_Help : $.getjson("TongYi_Help")) || [];
