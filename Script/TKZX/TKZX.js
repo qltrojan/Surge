@@ -349,7 +349,12 @@ function getSession(e) {
 
 async function sendMsg(message) {
     if ($.isNode()) {
-        let notify = require("./sendNotify");
+        let notify = ''
+        try {
+            notify = require('./sendNotify');
+        } catch (e) {
+            notify = require("../sendNotify");
+        }
         await notify.sendNotify($.name, message);
     } else {
         $.msg($.name, '', message)
