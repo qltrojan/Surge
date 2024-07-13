@@ -21,6 +21,7 @@ async function main() {
         id = item.id;
         openId = item.openId;
         unionId = item.unionId;
+        token = ''
         console.log(`用户：${id}开始任务`)
         let login = await commonPost('/club-server/member/automaticLogin',{"identityType":"mobile","identityValue":id,"type2":"wechat-unionid","value2":"","source":"顾家小程序","contentName":"","openid":openId,"unionid":unionId})
         if (login.status === 200) {
@@ -29,7 +30,7 @@ async function main() {
             memberId = login.data.membership.id
         } else {
             console.log(login.msg)
-            return
+            continue
         }
         console.log('开始签到')
         let sign = await commonPost('/integral-server/scenePoint/scene/point',{"scene":"sign","memberId":memberId,"brandCode":"K001"})
