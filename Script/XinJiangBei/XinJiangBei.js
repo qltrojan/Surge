@@ -72,79 +72,83 @@ async function main() {
         console.log("————————————")
         console.log("获取id")
         let buoyList = await commonGet('/api/buoy/list')
-        let url = decodeURIComponent(buoyList.data.new_up.icon_list[0].turn_to.url);
-        let urlStr = url.split('redirect')[1];
-        urlStr = urlStr.split('?')[1];
-        let result = {};
-        let paramsArr = urlStr.split('&')
-        for(let i = 0,len = paramsArr.length;i < len;i++){
-            let arr = paramsArr[i].split('=')
-            result[arr[0]] = arr[1];
-        }
-        id = result.id;
-        console.log(id)
-        console.log("阅读登录")
-        let activityLogin = await activityGet(`/customActivity/zjtm/autoLogin?_=${Date.now()}&sessionId=${sessionId}&accountId=${accountId}&redirectUrl=https://92261.activity-14.m.duiba.com.cn/hdtool/index?id=${id}&dbnewopen`)
-        let location = activityLogin.data;
-        activityCookie = ''
-        activityCookie = await activityCookieGet(location);
-        console.log("获取抽奖key")
-        let key = await keyGet('https://92261.activity-14.m.duiba.com.cn/hdtool/index?id=266434186956361&dbnewopen&from=login&spm=92261.1.1.1')
-        let activity = await activityPost(`/hdtool/ajaxElement?_=${Date.now()}`,`hdType=dev&hdToolId=&preview=false&actId=${id}&adslotId=`)
-        console.log(`拥有${activity.element.freeLimit}次抽奖`)
-        for (let i = 0; i < activity.element.freeLimit; i++) {
-            let getTokenNew = await activityPost(`/hdtool/ctoken/getTokenNew`,`timestamp=${Date.now()}&activityId=${id}&activityType=hdtool&consumerId=4134698352`)
-            eval(getTokenNew.token);
-            let token = window[key];
-            let lottery = await activityPost(`/hdtool/dy/doJoin?dpm=92261.3.1.0&activityId=${id}&_=${Date.now()}`,`actId=${id}&oaId=${id}&activityType=hdtool&consumerId=4134698352&token=${token}`)
-            if (lottery.success) {
-                if (!lottery.orderId) {
-                    console.log(lottery.message)
-                    break
-                }
-                let orderId = lottery.orderId;
-                let result = 0;
-                while (result == 0) {
-                    let getOrderStatus = await activityPost(`/hdtool/getOrderStatus?_=${Date.now()}`,`orderId=${orderId}&adslotId=`)
-                    result = getOrderStatus.result;
-                    if (result == 0) {
-                        console.log(getOrderStatus.message)
-                    } else {
-                        if (getOrderStatus.lottery.type == 'thanks') {
-                            console.log(`谢谢参与`)
-                        }
-                        if (getOrderStatus.lottery.type == 'alipay') {
-                            console.log(`抽奖获得支付宝红包：${getOrderStatus.lottery.title}`)
-                            // let getToken = await activityPost(`/ctoken/getToken.do`,``)
-                            // eval(getToken.token);
-                            // const key = '4ce0b4dt';
-                            // let token = window[key];
-                            let url = getOrderStatus.lottery.link;
-                            let urlStr = url.split('?')[1];
-                            let result = {};
-                            let paramsArr = urlStr.split('&')
-                            for(let i = 0,len = paramsArr.length;i < len;i++){
-                                let arr = paramsArr[i].split('=')
-                                result[arr[0]] = arr[1];
+        if (buoyList?.data?.new_up?.icon_list[0].turn_to.url) {
+            let url = decodeURIComponent(buoyList.data.new_up.icon_list[0].turn_to.url);
+            let urlStr = url.split('redirect')[1];
+            urlStr = urlStr.split('?')[1];
+            let result = {};
+            let paramsArr = urlStr.split('&')
+            for(let i = 0,len = paramsArr.length;i < len;i++){
+                let arr = paramsArr[i].split('=')
+                result[arr[0]] = arr[1];
+            }
+            id = result.id;
+            console.log(id)
+            console.log("阅读登录")
+            let activityLogin = await activityGet(`/customActivity/zjtm/autoLogin?_=${Date.now()}&sessionId=${sessionId}&accountId=${accountId}&redirectUrl=https://92261.activity-14.m.duiba.com.cn/hdtool/index?id=${id}&dbnewopen`)
+            let location = activityLogin.data;
+            activityCookie = ''
+            activityCookie = await activityCookieGet(location);
+            console.log("获取抽奖key")
+            let key = await keyGet('https://92261.activity-14.m.duiba.com.cn/hdtool/index?id=266434186956361&dbnewopen&from=login&spm=92261.1.1.1')
+            let activity = await activityPost(`/hdtool/ajaxElement?_=${Date.now()}`,`hdType=dev&hdToolId=&preview=false&actId=${id}&adslotId=`)
+            console.log(`拥有${activity.element.freeLimit}次抽奖`)
+            for (let i = 0; i < activity.element.freeLimit; i++) {
+                let getTokenNew = await activityPost(`/hdtool/ctoken/getTokenNew`,`timestamp=${Date.now()}&activityId=${id}&activityType=hdtool&consumerId=4134698352`)
+                eval(getTokenNew.token);
+                let token = window[key];
+                let lottery = await activityPost(`/hdtool/dy/doJoin?dpm=92261.3.1.0&activityId=${id}&_=${Date.now()}`,`actId=${id}&oaId=${id}&activityType=hdtool&consumerId=4134698352&token=${token}`)
+                if (lottery.success) {
+                    if (!lottery.orderId) {
+                        console.log(lottery.message)
+                        break
+                    }
+                    let orderId = lottery.orderId;
+                    let result = 0;
+                    while (result == 0) {
+                        let getOrderStatus = await activityPost(`/hdtool/getOrderStatus?_=${Date.now()}`,`orderId=${orderId}&adslotId=`)
+                        result = getOrderStatus.result;
+                        if (result == 0) {
+                            console.log(getOrderStatus.message)
+                        } else {
+                            if (getOrderStatus.lottery.type == 'thanks') {
+                                console.log(`谢谢参与`)
                             }
-                            let recordId = result.recordId;
-                            if (realname && aliPay) {
-                                console.log("获取兑换key")
-                                key = await keyGet(`https://92261.activity-14.m.duiba.com.cn/activity/takePrizeNew?recordId=${recordId}&dbnewopen`)
-                                let getToken = await activityPost(`/ctoken/getToken.do`)
-                                eval(getToken.token);
-                                let token = window[key];
-                                let award = await activityPost(`/activity/doTakePrize`,`alipay=${aliPay}&realname=${encodeURI(realname)}&recordId=${recordId}&token=${token}`)
-                                console.log(award.message)
-                            } else {
-                                console.log(`请设置支付宝姓名和账号`)
+                            if (getOrderStatus.lottery.type == 'alipay') {
+                                console.log(`抽奖获得支付宝红包：${getOrderStatus.lottery.title}`)
+                                // let getToken = await activityPost(`/ctoken/getToken.do`,``)
+                                // eval(getToken.token);
+                                // const key = '4ce0b4dt';
+                                // let token = window[key];
+                                let url = getOrderStatus.lottery.link;
+                                let urlStr = url.split('?')[1];
+                                let result = {};
+                                let paramsArr = urlStr.split('&')
+                                for(let i = 0,len = paramsArr.length;i < len;i++){
+                                    let arr = paramsArr[i].split('=')
+                                    result[arr[0]] = arr[1];
+                                }
+                                let recordId = result.recordId;
+                                if (realname && aliPay) {
+                                    console.log("获取兑换key")
+                                    key = await keyGet(`https://92261.activity-14.m.duiba.com.cn/activity/takePrizeNew?recordId=${recordId}&dbnewopen`)
+                                    let getToken = await activityPost(`/ctoken/getToken.do`)
+                                    eval(getToken.token);
+                                    let token = window[key];
+                                    let award = await activityPost(`/activity/doTakePrize`,`alipay=${aliPay}&realname=${encodeURI(realname)}&recordId=${recordId}&token=${token}`)
+                                    console.log(award.message)
+                                } else {
+                                    console.log(`请设置支付宝姓名和账号`)
+                                }
                             }
                         }
                     }
+                } else {
+                    console.log(lottery.message)
                 }
-            } else {
-                console.log(lottery.message)
             }
+        } else {
+            console.log("没有抽奖活动")
         }
         console.log("————————————")
         console.log("开始签到")
