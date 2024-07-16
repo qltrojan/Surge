@@ -153,7 +153,11 @@ async function main() {
         for (let i = 0; i < lotteryCount.data; i++) {
             let lottery = await lotteryPost(`/tzrb/userAwardRecordUpgrade/saveUpdate`,'activityId=67&sessionId=undefined&sig=undefined&token=undefined')
             const index = priceArr.findIndex(e => e.id == lottery.data);
-            console.log(`抽奖获得：${priceArr[index].title}`)
+            if (index != -1) {
+                console.log(`抽奖获得：${priceArr[index].title}`)
+            } else {
+                console.log(JSON.stringify(lottery))
+            }
         }
         console.log("————————————")
         console.log("查询积分")
