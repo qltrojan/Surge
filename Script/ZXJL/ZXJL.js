@@ -1,5 +1,5 @@
 /**
- * cron "33 2,20 * * *" ZXJL.js
+ * cron "18 8,17 * * *" ZXJL.js
  * export ZXJL='[{"id": "1", "token": "1"},{"id": "2", "token": "2"}]'
  */
 const $ = new Env('尊享金陵')
