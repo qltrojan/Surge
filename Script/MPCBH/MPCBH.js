@@ -31,20 +31,28 @@ async function main() {
         } else {
             console.log('今日已签到')
         }
-        console.log('————————————')
-        console.log('浏览文章')
-        let articleList = await commonGet('/FlanArticle/articleList?column_id=renhe-hewenhua&pageNo=1&pageSize=10')
-        for (const article of articleList.data.articleList.rows) {
-            console.log(`📚文章标题：${article.title}`)
-            let articleView = await commonPost(`/FlanArticle/articleView`,{"article_id":article.article_id})
-            if (articleView.data.task.taskCount) {
-                console.log(`浏览成功，获得${articleView.data.task.point}积分`)
-            } else {
-                console.log(articleView.data.task.error)
-                if (articleView.data.task.error == '用户任务执行次数已达到上限') {
-                    break
-                }
-            }
+        // console.log('————————————')
+        // console.log('浏览文章')
+        // let articleList = await commonGet('/FlanArticle/articleList?column_id=renhe-hewenhua&pageNo=1&pageSize=10')
+        // for (const article of articleList.data.articleList.rows) {
+        //     console.log(`📚文章标题：${article.title}`)
+        //     let articleView = await commonPost(`/FlanArticle/articleView`,{"article_id":article.article_id})
+        //     if (articleView.data.task.taskCount) {
+        //         console.log(`浏览成功，获得${articleView.data.task.point}积分`)
+        //     } else {
+        //         console.log(articleView.data.task.error)
+        //         if (articleView.data.task.error == '用户任务执行次数已达到上限') {
+        //             break
+        //         }
+        //     }
+        // }
+        console.log("————————————")
+        console.log("观看视频")
+        let taskViewVideoView = await commonPost('/BlzAppletIndex/taskViewVideoView',{"video_id":"video-116"})
+        if (taskViewVideoView.data.task) {
+            console.log(`观看成功，获得${taskViewVideoView.data.task.point}积分`)
+        } else {
+            console.log('任务已完成')
         }
         console.log("————————————")
         console.log("查询积分")
