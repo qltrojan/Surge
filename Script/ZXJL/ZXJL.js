@@ -43,7 +43,7 @@ async function main() {
         eval(getToken.token);
         let doSign = await commonPost(`/sign/component/doSign?_=${Date.now()}`,`signOperatingId=${signOperatingId}&token=${window[key]}`)
         if (doSign.success) {
-            if (!doSign.orderId) {
+            if (!doSign?.data?.orderNum) {
                 console.log(doSign.desc)
                 return
             }
