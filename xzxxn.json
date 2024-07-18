@@ -622,6 +622,35 @@
         "https://raw.githubusercontent.com/xzxxn777/Surge/main/Script/TKZX/TKZX.PNG",
         "https://raw.githubusercontent.com/xzxxn777/Surge/main/Script/TKZX/TKZX.PNG"
       ]
+    },
+    {
+      "id": "FTEJ",
+      "name": "福田e家",
+      "keys": [
+        "FTEJ"
+      ],
+      "scripts": [
+        {
+          "name": "福田e家-手动执行",
+          "script": "https://raw.githubusercontent.com/xzxxn777/Surge/main/Script/FTEJ/FTEJ.js"
+        }
+      ],
+      "settings": [
+        {
+          "id": "FTEJ",
+          "name": "账号密码",
+          "val": "",
+          "type": "text",
+          "desc": "格式:手机号&密码 手机号&密码"
+        }
+      ],
+      "author": "@xzxxn777",
+      "repo": "https://github.com/xzxxn777/Surge",
+      "script": "https://raw.githubusercontent.com/xzxxn777/Surge/main/Script/FTEJ/FTEJ.js",
+      "icons": [
+        "https://raw.githubusercontent.com/xzxxn777/Surge/main/Script/FTEJ/FTEJ.png",
+        "https://raw.githubusercontent.com/xzxxn777/Surge/main/Script/FTEJ/FTEJ.png"
+      ]
     }
   ]
 }
