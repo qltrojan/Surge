@@ -58,42 +58,42 @@ async function main() {
         } else {
             console.log(sign.header.message)
         }
-        let doTask = false;
-        let taskList = await commonGet('/main/api/marketing/lgn/task/dailyTask?noLoad=true')
-        for (let task of taskList.body) {
-            console.log(`任务：${task.taskName}`)
-            if (task.status == 1) {
-                console.log(`任务已完成`)
-            } else {
-                if (task.taskCode == 'VIEW' || task.taskCode == 'SHARE' || task.taskCode == 'LIKE') {
-                    doTask = true;
-                }
-            }
-        }
-        if (doTask) {
-            let articleList = await commonPost('/main/api/community/post/page',{"queryPostType":"NEWEST","pageNo":1,"pageSize":20})
-            for (let article of articleList.body.list) {
-                console.log(`文章：${article.title}`)
-                key = s(), iv = s();
-                let read = await commonPost('/main/api/community/sec/post/detail', {
-                    encryptKey: encryptKey(`${key}@DS@${iv}`),
-                    encryptData: encryptData({"postId": article.id}, key, iv),
-                })
-                console.log(`阅读文章：${read.header.message}`)
-                key = s(), iv = s();
-                let like = await commonPost('/main/api/community/lgn/sec/user/like', {
-                    encryptKey: encryptKey(`${key}@DS@${iv}`),
-                    encryptData: encryptData({"subjectId":article.id, "subjectType":"POST"}, key, iv),
-                })
-                console.log(`点赞文章：${like.header.message}`)
-                key = s(), iv = s();
-                let share = await commonPost('/main/api/community/lgn/sec/user/forward', {
-                    encryptKey: encryptKey(`${key}@DS@${iv}`),
-                    encryptData: encryptData({"subjectId":article.id, "subjectType":"POST"}, key, iv),
-                })
-                console.log(`分享文章：${share.header.message}`)
-            }
-        }
+        // let doTask = false;
+        // let taskList = await commonGet('/main/api/marketing/lgn/task/dailyTask?noLoad=true')
+        // for (let task of taskList.body) {
+        //     console.log(`任务：${task.taskName}`)
+        //     if (task.status == 1) {
+        //         console.log(`任务已完成`)
+        //     } else {
+        //         if (task.taskCode == 'VIEW' || task.taskCode == 'SHARE' || task.taskCode == 'LIKE') {
+        //             doTask = true;
+        //         }
+        //     }
+        // }
+        // if (doTask) {
+        //     let articleList = await commonPost('/main/api/community/post/page',{"queryPostType":"NEWEST","pageNo":1,"pageSize":20})
+        //     for (let article of articleList.body.list) {
+        //         console.log(`文章：${article.title}`)
+        //         key = s(), iv = s();
+        //         let read = await commonPost('/main/api/community/sec/post/detail', {
+        //             encryptKey: encryptKey(`${key}@DS@${iv}`),
+        //             encryptData: encryptData({"postId": article.id}, key, iv),
+        //         })
+        //         console.log(`阅读文章：${read.header.message}`)
+        //         key = s(), iv = s();
+        //         let like = await commonPost('/main/api/community/lgn/sec/user/like', {
+        //             encryptKey: encryptKey(`${key}@DS@${iv}`),
+        //             encryptData: encryptData({"subjectId":article.id, "subjectType":"POST"}, key, iv),
+        //         })
+        //         console.log(`点赞文章：${like.header.message}`)
+        //         key = s(), iv = s();
+        //         let share = await commonPost('/main/api/community/lgn/sec/user/forward', {
+        //             encryptKey: encryptKey(`${key}@DS@${iv}`),
+        //             encryptData: encryptData({"subjectId":article.id, "subjectType":"POST"}, key, iv),
+        //         })
+        //         console.log(`分享文章：${share.header.message}`)
+        //     }
+        // }
         console.log("————————————")
         console.log("查询积分")
         key = s(), iv = s();

@@ -70,16 +70,18 @@ async function main() {
         console.log("————————————")
         console.log('阅读抽奖')
         console.log("获取id")
-        let buoyList = await commonGet('/api/buoy/list')
-        let url = buoyList.data.new_down.icon_list[0].turn_to.url;
-        let urlStr = url.split('?')[1];
-        let result = {};
-        let paramsArr = urlStr.split('&')
-        for(let i = 0,len = paramsArr.length;i < len;i++){
-            let arr = paramsArr[i].split('=')
-            result[arr[0]] = arr[1];
-        }
-        let articleId = result.id;
+        // let buoyList = await commonGet('/api/buoy/list')
+        // let url = buoyList.data.new_down.icon_list[0].turn_to.url;
+        // let urlStr = url.split('?')[1];
+        // let result = {};
+        // let paramsArr = urlStr.split('&')
+        // for(let i = 0,len = paramsArr.length;i < len;i++){
+        //     let arr = paramsArr[i].split('=')
+        //     result[arr[0]] = arr[1];
+        // }
+        // let articleId = result.id;
+        let articleList = await commonGet('/api/article/channel_list?channel_id=5de768411b011b48a65b772f&isDiFangHao=false&is_new=true&list_count=0&size=30')
+        let articleId = articleList.data.focus_list[0].channel_article_id;
         console.log(articleId)
         let articleDetail = await commonGet(`/api/article/detail?id=${articleId}`)
         url = articleDetail.data.article.share_url;
