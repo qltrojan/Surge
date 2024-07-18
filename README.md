@@ -57,6 +57,7 @@
 | 顾家家居 | [GJJJ](https://github.com/xzxxn777/Surge/blob/main/Script/GJJJ/GJJJ.js) | ✅(2024/07/13) | ✅️ |
 | 尊享金陵 | [ZXJL](https://github.com/xzxxn777/Surge/blob/main/Script/ZXJL/ZXJL.js) | ✅(2024/07/17) | ✅️ |
 | 泰康在线兑换 | [TKZX_Exchange](https://github.com/xzxxn777/Surge/blob/main/Script/TKZX/TKZX_Exchange.js) | ✅(2024/07/18) | ✅️ |
+| 福田e家 | [FTEJ](https://github.com/xzxxn777/Surge/blob/main/Script/FTEJ/FTEJ.js) | ✅(2024/07/18) | ✅️ |
 
 ------
 ### [一键订阅boxjs](http://boxjs.com/#/sub/add/https://raw.githubusercontent.com/xzxxn777/Surge/main/xzxxn.json)
