@@ -25,7 +25,7 @@ async function main() {
         password = item.split("&")[1]
         console.log(`用户：${phone}开始任务`)
         console.log('皮卡生活登录')
-        let pkLogin = await pkLoginPost('/ehomes-new/pkHome/api/user/getLoginMember2nd', {"memberId":"","memberID":"","mobile":"","token":"7fe186bb15ff4426ae84f300f05d9c8d","vin":"","safeEnc":Date.now()-10110000,"name":phone,"password":password,"position":"","deviceId":"","deviceBrand":"Redmi","brandName":"","deviceType":"0","versionCode":"21","versionName":"V1.1.10"})
+        let pkLogin = await pkLoginPost('/ehomes-new/pkHome/api/user/getLoginMember2nd', {"memberId":"","memberID":"","mobile":"","token":"7fe186bb15ff4426ae84f300f05d9c8d","vin":"","safeEnc":Date.now()-10110000,"name":phone,"password":password,"position":"","deviceId":"","deviceBrand":"","brandName":"","deviceType":"0","versionCode":"21","versionName":"V1.1.10"})
         console.log(pkLogin.msg)
         if (pkLogin.code != 200) {
             continue
