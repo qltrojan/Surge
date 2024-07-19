@@ -58,6 +58,7 @@
 | 尊享金陵 | [ZXJL](https://github.com/xzxxn777/Surge/blob/main/Script/ZXJL/ZXJL.js) | ✅(2024/07/17) | ✅️ |
 | 泰康在线兑换 | [TKZX_Exchange](https://github.com/xzxxn777/Surge/blob/main/Script/TKZX/TKZX_Exchange.js) | ✅(2024/07/18) | ✅️ |
 | 福田e家 | [FTEJ](https://github.com/xzxxn777/Surge/blob/main/Script/FTEJ/FTEJ.js) | ✅(2024/07/18) | ✅️ |
+| 红旗智联 | [HQZL](https://github.com/xzxxn777/Surge/blob/main/Script/HQZL/HQZL.js) | ✅(2024/07/19) | ✅️ |
 
 ------
 ### [一键订阅boxjs](http://boxjs.com/#/sub/add/https://raw.githubusercontent.com/xzxxn777/Surge/main/xzxxn.json)
