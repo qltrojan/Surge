@@ -124,8 +124,11 @@ async function main() {
                     contentId = postList.data.data[index].contentId;
                 }
                 let commentList = await commonGet(`/fawcshop/collect-sns/v1/dynamicTopic/getCommentDetailsInfoListNew?commentType=8500&contentId=${contentId}&pageNo=1&pageSize=10&commentDetailsId=&orderByRule=RULE10`)
-                index = Math.floor(Math.random() * commentList.data.result.length);
-                let comment = commentList.data.result[index].commentContext || commentList.data.result[index].parent.commentContext;
+                let comment = ''
+                while (!comment) {
+                    let index = Math.floor(Math.random() * commentList.data.result.length);
+                    comment = commentList.data.result[index]?.commentContext || commentList.data.result[index]?.parent?.commentContext;
+                }
                 console.log(`获取评论：${comment}`)
                 let addComment = await commentPost('/fawcshop/collect-sns/v1/dynamicTopic/saveCommentDetailsRevision',{"commentContext":comment,"commentType":"8500","contentId":contentId,"parentId":"0","fileString":[]})
                 console.log(addComment.msg)
