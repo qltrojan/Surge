@@ -84,6 +84,9 @@ async function main() {
         console.log("登录")
         let login = await loginPost(`/user/account/thi/login?appId=M001&deviceId=${generateUUID().replace(/-/g, '')}tsp2`,`password=${encrypt(key,iv,password)}&mobile=${phone}&version=1`)
         console.log('登录结果：' + login.status)
+        if (login.status != 'SUCCEED') {
+            continue
+        }
         token = login.accountVo.token;
         aid = login.accountVo.cid;
         console.log("开始签到")
@@ -119,11 +122,11 @@ async function main() {
                 while(!contentId) {
                     let index = Math.floor(Math.random() * postList.data.data.length);
                     contentId = postList.data.data[index].contentId;
-                    let commentList = await commonGet(`/fawcshop/collect-sns/v1/dynamicTopic/getCommentDetailsInfoListNew?commentType=8500&contentId=${contentId}&pageNo=1&pageSize=10&commentDetailsId=&orderByRule=RULE10`)
-                    index = Math.floor(Math.random() * commentList.data.result.length);
-                    let comment = commentList.data.result[index].commentContext || commentList.data.result[index].parent.commentContext;
-                    console.log(`获取评论：${comment}`)
                 }
+                let commentList = await commonGet(`/fawcshop/collect-sns/v1/dynamicTopic/getCommentDetailsInfoListNew?commentType=8500&contentId=${contentId}&pageNo=1&pageSize=10&commentDetailsId=&orderByRule=RULE10`)
+                index = Math.floor(Math.random() * commentList.data.result.length);
+                let comment = commentList.data.result[index].commentContext || commentList.data.result[index].parent.commentContext;
+                console.log(`获取评论：${comment}`)
                 let addComment = await commentPost('/fawcshop/collect-sns/v1/dynamicTopic/saveCommentDetailsRevision',{"commentContext":comment,"commentType":"8500","contentId":contentId,"parentId":"0","fileString":[]})
                 console.log(addComment.msg)
             }
