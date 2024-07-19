@@ -120,14 +120,14 @@ async function main() {
                 let postList = await commonGet('/fawcshop/cms/api/front/content/v2/queryUnionContentPostList?pageNo=1&pageSize=10&menuType=1')
                 let contentId = ''
                 while(!contentId) {
-                    let index = Math.floor(Math.random() * postList.data.data.length);
-                    contentId = postList.data.data[index]?.contentId;
+                    let index = Math.floor(Math.random() * postList?.data?.data?.length);
+                    contentId = postList?.data?.data[index]?.contentId;
                     if (!contentId) {
                         continue
                     }
                     let commentList = await commonGet(`/fawcshop/collect-sns/v1/dynamicTopic/getCommentDetailsInfoListNew?commentType=8500&contentId=${contentId}&pageNo=1&pageSize=10&commentDetailsId=&orderByRule=RULE10`)
-                    index = Math.floor(Math.random() * commentList.data.result.length);
-                    let comment = commentList.data.result[index]?.commentContext || commentList.data.result[index]?.parent?.commentContext;
+                    index = Math.floor(Math.random() * commentList?.data?.result?.length);
+                    let comment = commentList?.data?.result[index]?.commentContext || commentList?.data?.result[index]?.parent?.commentContext;
                     if (comment) {
                         console.log(`获取评论：${comment}`)
                         let addComment = await commentPost('/fawcshop/collect-sns/v1/dynamicTopic/saveCommentDetailsRevision',{"commentContext":comment,"commentType":"8500","contentId":contentId,"parentId":"0","fileString":[]})
