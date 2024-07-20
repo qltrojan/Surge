@@ -199,7 +199,7 @@ async function main() {
         console.log("查询积分")
         let detail = await commonGet(`/yongpai-user/api/user/client?userId=${userId}&deviceId=${deviceId}&token=${queryToken}`)
         console.log(`拥有积分：${detail.data.score}\n`)
-        notice += `用户：${phone} 积分：${detail.data.scorel}\n`
+        notice += `用户：${phone} 积分：${detail.data.score}\n`
     }
     if (notice) {
         await sendMsg(notice);
