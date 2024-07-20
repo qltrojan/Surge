@@ -1,7 +1,7 @@
 /**
  * cron "7 7 7 7 7" ResetPassword.js
  * export Common_Phone="手机号"
- * export Common_Type=""//XiShiYan,WangChao,XinJiangBei,TongLu,ZSWY,SHPJ
+ * export Common_Type=""//XiShiYan,WangChao,XinJiangBei,TongLu,ZSWY,SHPJ,YueCheng
  * export Common_smsCode="验证码"
  * export Common_Password="密码"
  */
@@ -49,6 +49,9 @@ async function main() {
     } else if (appType == "SHPJ") {
         tenantId = '14'
         clientId = '12'
+    } else if (appType == "YueCheng") {
+        tenantId = '31'
+        clientId = '48'
     }
     Utils = await loadUtils();
     console.log("随机生成UA")

@@ -1,94 +1,313 @@
 /**
- * cron "7 7 7 7 7" SendSms.js
- * export Common_Phone="手机号"
- * export Common_Type=""//XiShiYan,WangChao,XinJiangBei,TongLu,ZSWY,SHPJ,YueCheng
+ * cron "0 7,17 * * *" YueCheng.js
+ * export YueCheng="账号1&密码1 账号2&密码2"
  * export OCR_SERVER="ocr服务"
  */
-const $ = new Env('发送验证码')
-let phone = ($.isNode() ? process.env.Common_Phone : $.getdata("Common_Phone")) || "";
-let appType = ($.isNode() ? process.env.Common_Type : $.getdata("Common_Type")) || "";
+const $ = new Env('今日越城')
+const YueCheng = ($.isNode() ? process.env.YueCheng : $.getdata("YueCheng")) || '';
 const OCR_SERVER = ($.isNode() ? process.env.OCR_SERVER : $.getdata("OCR_SERVER")) || 'https://ddddocr.xzxxn7.live';
 let Utils = undefined;
 let signature_key = ''
-let tenantId = ''
+let notice = ''
+let sessionId = ''
+let tenantId = '31'
+let accountId = ''
+let clientId = '48'
+let signatureSalt = "FR*r!isE5W"
+let phone_number = ''
+let password = ''
 let ua = ''
 let commonUa = ''
-let accountId = ''
-let cookie = ''
-let clientId = ''
-let signatureSalt = "FR*r!isE5W"
-let sessionId = ''
-let notice = ''
+let deviceId = ''
+let jinhuaAppId = 'K8tbWP2J0x3uCITGYEhL'
+let jinhuaKey = '35c782a2'
+let jinhuaToken = ''
 !(async () => {
-    if (phone === "" || appType == "") {
-        console.log("请输入手机号和选择app")
-    } else {
-        await main();
-    }
+    await main();
 })().catch((e) => {$.log(e)}).finally(() => {$.done({});});
 
 async function main() {
     console.log('作者：@xzxxn777\n频道：https://t.me/xzxxn777\n群组：https://t.me/xzxxn7777\n自用机场推荐：https://xn--diqv0fut7b.com\n')
-    if (appType == "XiShiYan") {
-        tenantId = '34'
-        clientId = '50'
-    } else if (appType == "WangChao") {
-        tenantId = '64'
-        clientId = '10019'
-    } else if (appType == "XinJiangBei") {
-        tenantId = '102'
-        clientId = '10050'
-    } else if (appType == "TongLu") {
-        tenantId = '59'
-        clientId = '10017'
-    } else if (appType == "ZSWY") {
-        tenantId = '73'
-        clientId = '10024'
-    } else if (appType == "SHPJ") {
-        tenantId = '14'
-        clientId = '12'
-    } else if (appType == "YueCheng") {
-        tenantId = '31'
-        clientId = '48'
+    if (!YueCheng) {
+        console.log("先去boxjs填写账号密码")
+        await sendMsg('先去boxjs填写账号密码');
+        return
     }
     Utils = await loadUtils();
-    console.log("随机生成UA")
-    let randomUA = generateRandomUA();
-    ua = randomUA.ua;
-    commonUa = randomUA.commonUa;
-    console.log(ua)
-    console.log(commonUa)
-    console.log(`用户：${phone}开始任务`)
-    console.log("获取sessionId")
-    let initSession = await commonPost('/api/account/init');
-    sessionId = initSession.data.session.id;
-    console.log(sessionId)
-    console.log("获取signature_key")
-    let init = await initGet(`/web/init?client_id=${clientId}`)
-    console.log(cookie)
-    signature_key = init.data.client.signature_key;
-    console.log(signature_key)
-    console.log("发送验证码")
-    let sendSms = await passportPost('/web/security/send_security_code',`client_id=${clientId}&phone_number=${phone}`);
-    if(sendSms.code == 0) {
-        console.log("发送成功")
-    } else {
-        console.log(sendSms.message)
-        let image = await imageGet('/web/security/captcha_image')
-        let captcha = await slidePost({"image": image})
-        if (!captcha) {
-            console.log("ddddocr服务异常")
-            await sendMsg(`ddddocr服务异常`);
-            return
+    let arr = YueCheng.split(" ");
+    for (const item of arr) {
+        console.log("随机生成UA")
+        let randomUA = generateRandomUA();
+        ua = randomUA.ua;
+        commonUa = randomUA.commonUa;
+        deviceId = randomUA.uuid;
+        console.log(ua)
+        console.log(commonUa)
+        phone_number = item.split("&")[0]
+        password = item.split("&")[1]
+        console.log(`用户：${phone_number}开始任务`)
+        console.log("获取sessionId")
+        let initSession = await commonPost('/api/account/init');
+        sessionId = initSession.data.session.id;
+        console.log(sessionId)
+        console.log("获取signature_key")
+        let init = await initGet(`/web/init?client_id=${clientId}`)
+        signature_key = init.data.client.signature_key;
+        console.log(signature_key)
+        console.log("获取code")
+        let credential_auth = await passportPost('/web/oauth/credential_auth')
+        if (!credential_auth.data) {
+            console.log(credential_auth.message)
+            continue
         }
-        console.log(captcha)
-        sendSms = await passportPost('/web/security/send_security_code',`captcha=${captcha.result}&client_id=${clientId}&phone_number=${phone}`);
-        if (sendSms.code == 0) {
-            console.log("发送成功")
-        } else {
-            console.log(JSON.stringify(sendSms))
+        let code = credential_auth.data.authorization_code.code;
+        console.log(code)
+        console.log("登录")
+        let login = await commonPost('/api/zbtxz/login',`check_token=&code=${code}&token=&type=-1&union_id=`)
+        console.log('登录成功')
+        accountId = login.data.session.account_id;
+        sessionId = login.data.session.id;
+        console.log("————————————")
+        console.log('阅读抽奖')
+        console.log("获取id")
+        let articleList = await commonGet('/api/minus1floor/config')
+        let url = articleList.data.article_list[2].column_news_list[2].url;
+        let urlStr = url.split('?')[1];
+        let result = {};
+        let paramsArr = urlStr.split('&')
+        for(let i = 0,len = paramsArr.length;i < len;i++){
+            let arr = paramsArr[i].split('=')
+            result[arr[0]] = arr[1];
         }
+        let id = result.id;
+        console.log(id)
+        console.log("获取key和token")
+        let jinhuaLogin = await jinhuaPost('/api/member/login',{"debug":0,"userId":""})
+        jinhuaKey = jinhuaLogin.data.key;
+        jinhuaToken = "Bearer " + jinhuaLogin.data.token;
+        console.log(jinhuaKey)
+        console.log(jinhuaToken)
+        console.log("获取抽奖id")
+        let jinhuaDetail = await jinhuaGet(`/api/study/detail?id=${id}`,{"id":id})
+        let lotteryId = jinhuaDetail.data.lottery.lottery_id;
+        console.log(lotteryId)
+        console.log("开始阅读")
+        for (const item of jinhuaDetail.data.levels) {
+            let level = await jinhuaGet(`/api/study/level?id=${item.id}`,{"id":item.id})
+            console.log(level.data.level.name)
+            if (level.data.level.task_num == level.data.completedTasks.length) {
+                console.log(`已完成`)
+                continue
+            }
+            for (const task of level.data.tasks) {
+                let detail = await commonGet(`/api/article/detail?id=${task.content_id}`)
+                console.log(`文章：${detail.data.article.list_title}`)
+                let read = await commonGet(`/api/article/read_time?channel_article_id=${task.content_id}&read_time=5938`)
+                console.log(`阅读：${read.message}`)
+                let complete = await jinhuaPost(`/api/study/task/complete`,{"id":task.id})
+                console.log(`完成任务：${complete.message}`)
+            }
+        }
+        let lotteryCount = await jinhuaPost(`/api/lotterybigwheel/_ac_lottery_count`,{"id":lotteryId,"module":"study"})
+        console.log(`拥有${lotteryCount.data.count}次抽奖`)
+        for (let i = 0; i < lotteryCount.data.count; i++) {
+            let lottery = await jinhuaPost(`/api/lotterybigwheel/_ac_lottery`,{"id":lotteryId,"app_id":jinhuaAppId,"module":"study","optionHash":""})
+            if (lottery.code == 10000) {
+                console.log(lottery.message)
+                let captcha =  await jinhuaPost(`/api/captcha/get`,{"activity_id":lotteryId,"module":"bigWheel"})
+                let jigsawImageUrl = captcha.data.jigsawImageUrl;
+                let originalImageUrl = captcha.data.originalImageUrl;
+                console.log(`滑块：${jigsawImageUrl}`)
+                console.log(`背景：${originalImageUrl}`)
+                let captchaToken = captcha.data.token;
+                let secretKey = captcha.data.secretKey;
+                console.log(`秘钥：${secretKey}`)
+                let getXpos = await slidePost({'slidingImage': jigsawImageUrl, 'backImage': originalImageUrl})
+                if (!getXpos) {
+                    console.log("ddddocr服务异常")
+                    await sendMsg('ddddocr服务异常');
+                    continue;
+                }
+                console.log(getXpos)
+                let point = aesEncrypt(JSON.stringify({x: getXpos.result, y: 5}), secretKey)
+                let check = await jinhuaPost(`/api/captcha/check`,{"activity_id":lotteryId,"module":"bigWheel","cap_token":captchaToken,"point":point})
+                console.log("验证滑块：" + check.message)
+                if (check.message == '操作成功') {
+                    lottery = await jinhuaPost(`/api/lotterybigwheel/_ac_lottery`,{"id":lotteryId,"app_id":jinhuaAppId,"module":"study","optionHash":""})
+                    if (lottery.data.code) {
+                        console.log(`抽奖获得：${lottery.data.title}`)
+                    } else {
+                        console.log(`抽奖获得：${lottery.data.tip_title}`)
+                    }
+                }
+            } else {
+                if (lottery.data.code) {
+                    console.log(`抽奖获得：${lottery.data.title}`)
+                } else {
+                    console.log(`抽奖获得：${lottery.data.tip_title}`)
+                }
+            }
+        }
+        console.log("————————————")
+        console.log("开始任务")
+        let readFinish = true;
+        let likeFinish = true;
+        let shareFinish = true;
+        let taskList = await commonGet('/api/user_center/task?type=1&current=1&size=20')
+        for (let task of taskList.data.list) {
+            console.log(`任务：${task.name}`)
+            if (task.completed == 1) {
+                console.log(`任务已完成`)
+                continue;
+            }
+            console.log(`任务进度：${task.finish_times}/${task.frequency}`)
+            if (task.name == '新闻资讯阅读') {
+                readFinish = false;
+            }
+            if (task.name == '新闻资讯点赞') {
+                likeFinish = false;
+            }
+            if (task.name == '分享资讯给好友') {
+                shareFinish = false;
+            }
+        }
+        if (!readFinish || !likeFinish || !shareFinish) {
+            let articleList = await commonGet('/api/article/channel_list?channel_id=5dbf7fdfb1985007455762fd&isDiFangHao=false&is_new=true&list_count=0&size=20')
+            for (const article of articleList.data.article_list) {
+                let articleId = article.id;
+                if (!readFinish) {
+                    let read = await commonGet(`/api/article/read_time?channel_article_id=${articleId}&is_end=true&read_time=3051`)
+                    if (read.data.score_notify) {
+                        console.log(`阅读获得：${read.data?.score_notify?.integral}积分`)
+                    } else {
+                        console.log(`文章已经阅读过了`)
+                    }
+                }
+                if (!likeFinish) {
+                    let like = await commonPost(`/api/favorite/like`,`action=true&id=${articleId}`)
+                    if (like.data) {
+                        console.log(`点赞获得：${like.data?.score_notify?.integral}积分`)
+                    } else {
+                        console.log(`文章已经点赞过了`)
+                    }
+                }
+                if (!shareFinish) {
+                    let share = await commonPost(`/api/user_mumber/doTask`,`memberType=3&member_type=3&target_id==${articleId}`)
+                    if (share.data.score_notify) {
+                        console.log(`分享获得：${share.data?.score_notify?.integral}积分`)
+                    } else {
+                        console.log(`文章已经分享过了`)
+                    }
+                }
+            }
+        }
+        console.log("————————————")
+        console.log("查询积分")
+        let detail = await commonGet('/api/user_mumber/account_detail')
+        console.log(`拥有积分：${detail.data.rst.total_integral}\n`)
+        notice += `用户：${phone_number} 积分：${detail.data.rst.total_integral}\n`
     }
+    if (notice) {
+        await sendMsg(notice);
+    }
+}
+
+async function initGet(url) {
+    return new Promise(resolve => {
+        const options = {
+            url: `https://passport.tmuyun.com${url}`,
+            headers : {
+                'Connection': 'Keep-Alive',
+                'Cache-Control': 'no-cache',
+                'X-REQUEST-ID': generateUUID(),
+                'Accept-Encoding': 'gzip',
+                'user-agent': ua,
+            }
+        }
+        $.get(options, async (err, resp, data) => {
+            try {
+                if (err) {
+                    console.log(`${JSON.stringify(err)}`)
+                    console.log(`${$.name} API请求失败，请检查网路重试`)
+                } else {
+                    resolve(JSON.parse(data));
+                }
+            } catch (e) {
+                $.logErr(e, resp)
+            } finally {
+                resolve();
+            }
+        })
+    })
+}
+
+async function passportPost(url) {
+    let params = getBody();
+    return new Promise(resolve => {
+        const options = {
+            url: `https://passport.tmuyun.com${url}`,
+            headers : {
+                'Connection': 'Keep-Alive',
+                'X-REQUEST-ID': params.uuid,
+                'X-SIGNATURE': params.signature,
+                'Cache-Control': 'no-cache',
+                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+                'Accept-Encoding': 'gzip',
+                'user-agent': ua,
+            },
+            body: params.body
+        }
+        $.post(options, async (err, resp, data) => {
+            try {
+                if (err) {
+                    console.log(`${JSON.stringify(err)}`)
+                    console.log(`${$.name} API请求失败，请检查网路重试`)
+                } else {
+                    resolve(JSON.parse(data));
+                }
+            } catch (e) {
+                $.logErr(e, resp)
+            } finally {
+                resolve();
+            }
+        })
+    })
+}
+
+async function commonGet(url) {
+    let params = getParams(url);
+    return new Promise(resolve => {
+        const options = {
+            url: `https://vapp.tmuyun.com${url}`,
+            headers : {
+                'Connection': 'Keep-Alive',
+                'X-TIMESTAMP': params.time,
+                'X-SESSION-ID': sessionId,
+                'X-REQUEST-ID': params.uuid,
+                'X-SIGNATURE': params.signature,
+                'X-TENANT-ID': tenantId,
+                'X-ACCOUNT-ID': accountId,
+                'Cache-Control': 'no-cache',
+                'Accept-Encoding': 'gzip',
+                'user-agent': commonUa,
+            }
+        }
+        $.get(options, async (err, resp, data) => {
+            try {
+                if (err) {
+                    console.log(`${JSON.stringify(err)}`)
+                    console.log(`${$.name} API请求失败，请检查网路重试`)
+                } else {
+                    await $.wait(2000)
+                    resolve(JSON.parse(data));
+                }
+            } catch (e) {
+                $.logErr(e, resp)
+            } finally {
+                resolve();
+            }
+        })
+    })
 }
 
 async function commonPost(url,body) {
@@ -128,33 +347,43 @@ async function commonPost(url,body) {
     })
 }
 
-async function initGet(url) {
+async function jinhuaPost(url,body) {
+    let params = getJinhuaParams(body);
     return new Promise(resolve => {
         const options = {
-            url: `https://passport.tmuyun.com${url}`,
+            url: `https://op-api.cloud.jinhua.com.cn${url}`,
             headers : {
-                'Connection': 'Keep-Alive',
-                'Cache-Control': 'no-cache',
-                'X-REQUEST-ID': generateUUID(),
-                'Accept-Encoding': 'gzip',
-                'user-agent': ua,
-            }
+                'access-type': 'app',
+                'access-module': 'study',
+                'access-device-id': deviceId,
+                'access-auth-id': accountId,
+                'access-api-signature': params.signature,
+                'access-nonce-str': params.uuid,
+                'authorization': jinhuaToken,
+                'access-app-id': jinhuaAppId,
+                'access-timestamp': params.time,
+                'access-api-token': sessionId,
+                'accept': 'application/json, text/plain, */*',
+                'user-agent': 'Mozilla/5.0 (Linux; Android 11; 21091116AC Build/RP1A.200720.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/94.0.4606.85 Mobile Safari/537.36;xsb_yuecheng;xsb_yuecheng;1.7.0;native_app;6.12.0',
+                'content-type': 'application/json; charset=UTF-8',
+                'origin': 'https://op-h5.cloud.jinhua.com.cn',
+                'x-requested-with': 'com.zjonline.zhuji',
+                'sec-fetch-site': 'same-site',
+                'sec-fetch-mode': 'cors',
+                'sec-fetch-dest': 'empty',
+                'referer': 'https://op-h5.cloud.jinhua.com.cn/',
+                'accept-encoding': 'gzip, deflate',
+                'accept-language': 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7',
+            },
+            body: JSON.stringify(body)
         }
-        $.get(options, async (err, resp, data) => {
+        $.post(options, async (err, resp, data) => {
             try {
                 if (err) {
                     console.log(`${JSON.stringify(err)}`)
                     console.log(`${$.name} API请求失败，请检查网路重试`)
                 } else {
-                    if ($.isNode()) {
-                        let cookieArr = resp.headers['set-cookie'] || resp.headers['Set-Cookie'];
-                        for (let i = 0; i < cookieArr.length; i++) {
-                            cookie += cookieArr[i].split(';')[0] + ';'
-                        }
-                    } else {
-                        cookie = resp.headers['set-cookie'] || resp.headers['Set-Cookie'];
-                        cookie = formatCookies(cookie);
-                    }
+                    await $.wait(2000)
                     resolve(JSON.parse(data));
                 }
             } catch (e) {
@@ -166,19 +395,33 @@ async function initGet(url) {
     })
 }
 
-async function imageGet(url) {
+async function jinhuaGet(url,body) {
+    let params = getJinhuaParams(body);
     return new Promise(resolve => {
         const options = {
-            url: `https://passport.tmuyun.com${url}`,
+            url: `https://op-api.cloud.jinhua.com.cn${url}`,
             headers : {
-                'Connection': 'Keep-Alive',
-                'Cache-Control': 'no-cache',
-                'X-REQUEST-ID': generateUUID(),
-                'Accept-Encoding': 'gzip',
-                'user-agent': ua,
-                'Cookie': cookie
-            },
-            'binary-mode': true
+                'access-type': 'app',
+                'access-module': 'study',
+                'access-device-id': deviceId,
+                'access-auth-id': accountId,
+                'access-api-signature': params.signature,
+                'access-nonce-str': params.uuid,
+                'authorization': jinhuaToken,
+                'access-app-id': jinhuaAppId,
+                'access-timestamp': params.time,
+                'access-api-token': sessionId,
+                'accept': 'application/json, text/plain, */*',
+                'user-agent': 'Mozilla/5.0 (Linux; Android 11; 21091116AC Build/RP1A.200720.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/94.0.4606.85 Mobile Safari/537.36;xsb_yuecheng;xsb_yuecheng;1.7.0;native_app;6.12.0',
+                'origin': 'https://op-h5.cloud.jinhua.com.cn',
+                'x-requested-with': 'com.zjonline.zhuji',
+                'sec-fetch-site': 'same-site',
+                'sec-fetch-mode': 'cors',
+                'sec-fetch-dest': 'empty',
+                'referer': 'https://op-h5.cloud.jinhua.com.cn/',
+                'accept-encoding': 'gzip, deflate',
+                'accept-language': 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7',
+            }
         }
         $.get(options, async (err, resp, data) => {
             try {
@@ -186,48 +429,7 @@ async function imageGet(url) {
                     console.log(`${JSON.stringify(err)}`)
                     console.log(`${$.name} API请求失败，请检查网路重试`)
                 } else {
-                    let image = ''
-                    if ($.isNode()) {
-                        image = resp.rawBody.toString('base64')
-                    } else if ($.isQuanX()) {
-                        image = uint8ArrayToBase64(new Uint8Array(resp.bodyBytes));
-                    } else {
-                        image = binaryToBase64(data);
-                    }
-                    resolve(image);
-                }
-            } catch (e) {
-                $.logErr(e, resp)
-            } finally {
-                resolve();
-            }
-        })
-    })
-}
-
-async function passportPost(url,body) {
-    let params = getBody(url, body);
-    return new Promise(resolve => {
-        const options = {
-            url: `https://passport.tmuyun.com${url}`,
-            headers : {
-                'Connection': 'Keep-Alive',
-                'X-REQUEST-ID': params.uuid,
-                'X-SIGNATURE': params.signature,
-                'Cache-Control': 'no-cache',
-                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-                'Accept-Encoding': 'gzip',
-                'user-agent': ua,
-                'Cookie': cookie
-            },
-            body:body
-        }
-        $.post(options, async (err, resp, data) => {
-            try {
-                if (err) {
-                    console.log(`${JSON.stringify(err)}`)
-                    console.log(`${$.name} API请求失败，请检查网路重试`)
-                } else {
+                    await $.wait(2000)
                     resolve(JSON.parse(data));
                 }
             } catch (e) {
@@ -242,7 +444,7 @@ async function passportPost(url,body) {
 async function slidePost(body) {
     return new Promise(resolve => {
         const options = {
-            url: `${OCR_SERVER}/classification`,
+            url: `${OCR_SERVER}/capcode`,
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -265,13 +467,53 @@ async function slidePost(body) {
     })
 }
 
-function getBody(url,body) {
+function aesEncrypt(e, r) {
+    CryptoJS = Utils.createCryptoJS();
+    var n = CryptoJS.enc.Utf8.parse(r)
+        , o = CryptoJS.enc.Utf8.parse(e)
+        , s = CryptoJS.AES.encrypt(o, n, {
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7
+    });
+    return s.toString()
+}
+
+function getBody() {
+    const key = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQD6XO7e9YeAOs+cFqwa7ETJ+WXizPqQeXv68i5vqw9pFREsrqiBTRcg7wB0RIp3rJkDpaeVJLsZqYm5TW7FWx/iOiXFc+zCPvaKZric2dXCw27EvlH5rq+zwIPDAJHGAfnn1nmQH7wR3PCatEIb8pz5GFlTHMlluw4ZYmnOwg+thwIDAQAB';
+    const encryptor = new (Utils.loadJSEncrypt());
+    encryptor.setPublicKey(key);
+    password = encryptor.encrypt(password);
     let uuid = generateUUID();
-    const str = `post%%${url}?${body}%%${uuid}%%`;
+    let body = `client_id=${clientId}&password=${password}&phone_number=${phone_number}`;
+    const str = `post%%/web/oauth/credential_auth?${body}%%${uuid}%%`;
+    body = `client_id=${clientId}&password=${encodeURIComponent(password)}&phone_number=${phone_number}`;
     CryptoJS = Utils.createCryptoJS();
     const hash = CryptoJS.HmacSHA256(str, signature_key);
     let signature = CryptoJS.enc.Hex.stringify(hash);
-    return {"uuid":uuid,"signature":signature};
+    return {"uuid":uuid,"signature":signature,"body":body};
+}
+
+function getJinhuaParams(params) {
+    let uuid = generateUUID();
+    let time = Date.now();
+    let config = {
+        app_id: jinhuaAppId,
+        device_id: deviceId,
+        nonce_str: uuid,
+        source_type: 'app',
+        timestamp: time,
+        auth_id: accountId,
+        token: sessionId
+    };
+    Object.entries(params).forEach(([key, value]) => {
+        config[key] = value;
+    });
+    let sortedKeys = Object.keys(config).sort();
+    let result = sortedKeys.map(key => `${key}=${config[key]}`).join('&&');
+    result = result + '&&' + jinhuaKey;
+    CryptoJS = Utils.createCryptoJS();
+    let signature = CryptoJS.SHA256(result).toString();
+    return {"uuid":uuid,"time":time,"signature":signature};
 }
 
 function getParams(url) {
@@ -293,8 +535,12 @@ function generateUUID() {
     });
 }
 
+function getRandomElement(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+
 function generateRandomUA() {
-    const version = "6.0.2";
+    const version = "1.7.0";
     const uuid = generateUUID();
     const deviceIds = [
         "M1903F2A",
@@ -327,57 +573,11 @@ function generateRandomUA() {
     const os = "Android";
     const osVersion = "11";
     const osType = "Release";
-    const appVersion = "6.10.0";
+    const appVersion = "6.12.0";
 
     let ua = `${os.toUpperCase()};${osVersion};${clientId};${version};1.0;null;${deviceId}`
     let commonUa = `${version};${uuid};${device};${os};${osVersion};${osType};${appVersion}`
     return {"ua": ua, "commonUa": commonUa,"uuid":uuid};
-}
-
-function getRandomElement(arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
-}
-
-function binaryToBase64(binaryData) {
-    const base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-    let base64 = "";
-    let padding = "";
-    const len = binaryData.length;
-    for (let i = 0; i < len; i += 3) {
-        let triplet = (binaryData[i] << 16) | (binaryData[i + 1] << 8) | binaryData[i + 2];
-        base64 += base64Chars[(triplet >> 18) & 0x3F];
-        base64 += base64Chars[(triplet >> 12) & 0x3F];
-        base64 += base64Chars[(triplet >> 6) & 0x3F];
-        base64 += base64Chars[triplet & 0x3F];
-    }
-
-    if (len % 3 === 1) {
-        base64 = base64.slice(0, -2) + "==";
-    } else if (len % 3 === 2) {
-        base64 = base64.slice(0, -1) + "=";
-    }
-    return base64;
-}
-
-function uint8ArrayToBase64(uint8Array) {
-    // 将Uint8Array转换为字符串
-    let binaryString = '';
-    for (let i = 0; i < uint8Array.length; i++) {
-        binaryString += String.fromCharCode(uint8Array[i]);
-    }
-
-    // 将字符串转换为Base64编码
-    const base64String = btoa(binaryString);
-    return base64String;
-}
-
-function formatCookies(cookieString) {
-    const cookies = cookieString.split(', ');
-    const formattedCookies = cookies.map(cookie => {
-        const keyValue = cookie.split(';')[0];
-        return keyValue.trim();
-    });
-    return formattedCookies.join(';');
 }
 
 async function loadUtils() {
