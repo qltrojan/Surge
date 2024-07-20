@@ -656,7 +656,8 @@
       "id": "YongPai",
       "name": "甬派",
       "keys": [
-        "YongPai"
+        "YongPai",
+        "YongPaiDeviceId"
       ],
       "scripts": [
         {
@@ -671,6 +672,13 @@
           "val": "",
           "type": "text",
           "desc": "格式:账号1&密码1&支付宝姓名1&支付宝账号1 账号2&密码2&支付宝姓名2&支付宝账号2"
+        },
+        {
+          "id": "YongPaiDeviceId",
+          "name": "设备id",
+          "val": "",
+          "type": "text",
+          "desc": "抓包填写"
         }
       ],
       "author": "@xzxxn777",

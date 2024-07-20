@@ -1,9 +1,11 @@
 /**
  * cron "8 6,14,22 * * *" YongPai.js
  * export YongPai="账号1&密码1&支付宝姓名1&支付宝账号1 账号2&密码2&支付宝姓名2&支付宝账号2"
+ * export YongPaiDeviceId="设备id"
  */
 const $ = new Env('甬派')
 const YongPai = ($.isNode() ? process.env.YongPai : $.getdata("YongPai")) || '';
+let deviceId = ($.isNode() ? process.env.YongPaiDeviceId : $.getdata("YongPaiDeviceId")) || '';
 window = {};
 let token = ''
 let lotteryCookie = ''
@@ -14,7 +16,6 @@ let realname = ''
 let aliPay = ''
 let userId = ''
 let name = ''
-let deviceId = ''
 let model = ''
 let notice = ''
 !(async () => {
@@ -32,7 +33,9 @@ async function main() {
     for (const item of arr) {
         console.log("随机生成设备")
         let randomDevice = generateRandomDevice();
-        deviceId = randomDevice.deviceId;
+        if (!deviceId) {
+            deviceId = randomDevice.deviceId;
+        }
         model = randomDevice.model;
         console.log(deviceId)
         console.log(model)
