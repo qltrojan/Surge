@@ -53,14 +53,16 @@ async function main() {
             let comment = await taskPost(`/comment/${article.id}`,{"content":text,"picUrls":[],"busId":article.id,"postId":article.id})
             console.log(`发布评论：${comment.msg}`)
         }
-        let text = await textGet();
-        if (!text || text.length < 10) {
-            text = '如果觉得没有朋友，就去找喜欢的人表白，对方会提出和你做朋友的。'
+        for (let i = 0; i < 2; i++) {
+            let text = await textGet();
+            if (!text || text.length < 10) {
+                text = '如果觉得没有朋友，就去找喜欢的人表白，对方会提出和你做朋友的。'
+            }
+            console.log(`获取每日一言：${text}`)
+            let content = `<p>${text}</p>`
+            let addPost = await taskPost(`/addPost`,{"userId":id,"title":"每日一言","content":content,"tribeId":111,"videoUrl":null,"videoPosterUrl":null})
+            console.log(`发布帖子：${addPost.msg}`)
         }
-        console.log(`获取每日一言：${text}`)
-        let content = `<p>${text}</p>`
-        let addPost = await taskPost(`/addPost`,{"userId":id,"title":"每日一言","content":content,"tribeId":111,"videoUrl":null,"videoPosterUrl":null})
-        console.log(`发布帖子：${addPost.msg}`)
         console.log("————————————")
         console.log("查询积分")
         let home = await commonGet('/v2.member.score_shop/home')
