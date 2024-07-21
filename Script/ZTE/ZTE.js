@@ -65,7 +65,7 @@ async function main() {
         }
     }
     for (const item of tokenArr) {
-        phone = item.id;
+        phone = item.phone;
         token = item.token;
         console.log(`\n用户：${phone}开始任务`)
         // 日常任务
