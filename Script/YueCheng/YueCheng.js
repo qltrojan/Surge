@@ -1,5 +1,5 @@
 /**
- * cron "0 7,17 * * *" YueCheng.js
+ * cron "0 9,19 * * *" YueCheng.js
  * export YueCheng="账号1&密码1 账号2&密码2"
  * export OCR_SERVER="ocr服务"
  */
