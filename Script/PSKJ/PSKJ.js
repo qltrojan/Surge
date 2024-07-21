@@ -40,6 +40,28 @@ async function main() {
             console.log(`抽奖获得：${drawrecord.data.name}`)
         }
         console.log("————————————")
+        console.log('开始任务')
+        let articleList = await taskPost('/latest?pageNum=1&pageSize=5',{})
+        for (const article of articleList.rows) {
+            let view = await taskPost(`/info/${article.id}`,{})
+            console.log(`浏览帖子：${view.msg}`)
+            let text = await textGet();
+            if (!text || text.length < 10) {
+                text = '如果觉得没有朋友，就去找喜欢的人表白，对方会提出和你做朋友的。'
+            }
+            console.log(`获取每日一言：${text}`)
+            let comment = await taskPost(`/comment/${article.id}`,{"content":text,"picUrls":[],"busId":article.id,"postId":article.id})
+            console.log(`发布评论：${comment.msg}`)
+        }
+        let text = await textGet();
+        if (!text || text.length < 10) {
+            text = '如果觉得没有朋友，就去找喜欢的人表白，对方会提出和你做朋友的。'
+        }
+        console.log(`获取每日一言：${text}`)
+        let content = `<p>${text}</p>`
+        let addPost = await taskPost(`/addPost`,{"userId":id,"title":"每日一言","content":content,"tribeId":111,"videoUrl":null,"videoPosterUrl":null})
+        console.log(`发布帖子：${addPost.msg}`)
+        console.log("————————————")
         console.log("查询积分")
         let home = await commonGet('/v2.member.score_shop/home')
         console.log(`拥有积分：${home.data.score_val}\n`)
@@ -115,6 +137,43 @@ async function commonPost(url,body) {
     })
 }
 
+async function taskPost(url,body) {
+    return new Promise(resolve => {
+        const options = {
+            url: `https://technology.ipason.com/admin/app/wx/post${url}`,
+            headers : {
+                'content-type': 'application/json',
+                'xweb_xhr': '1',
+                'authorization': token,
+                'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 MicroMessenger/6.8.0(0x16080000) NetType/WIFI MiniProgramEnv/Mac MacWechat/WMPF MacWechat/3.8.7(0x13080712) XWEB/1191',
+                'accept': '*/*',
+                'Sec-Fetch-Site': 'cross-site',
+                'Sec-Fetch-Mode': 'cors',
+                'Sec-Fetch-Dest': 'empty',
+                'Referer': `https://servicewechat.com/wxb0cd377dac079028/28/page-frame.html`,
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Accept-Language': 'zh-CN,zh;q=0.9',
+            },
+            body: JSON.stringify(body)
+        }
+        $.post(options, async (err, resp, data) => {
+            try {
+                if (err) {
+                    console.log(`${JSON.stringify(err)}`)
+                    console.log(`${$.name} API请求失败，请检查网路重试`)
+                } else {
+                    await $.wait(2000)
+                    resolve(JSON.parse(data));
+                }
+            } catch (e) {
+                $.logErr(e, resp)
+            } finally {
+                resolve();
+            }
+        })
+    })
+}
+
 async function commonGet(url) {
     return new Promise(resolve => {
         const options = {
@@ -141,6 +200,31 @@ async function commonGet(url) {
                 } else {
                     await $.wait(2000)
                     resolve(JSON.parse(data));
+                }
+            } catch (e) {
+                $.logErr(e, resp)
+            } finally {
+                resolve();
+            }
+        })
+    })
+}
+
+async function textGet() {
+    return new Promise(resolve => {
+        const options = {
+            url: `https://api.btstu.cn/yan/api.php`,
+            headers : {
+            }
+        }
+        $.get(options, async (err, resp, data) => {
+            try {
+                if (err) {
+                    console.log(`${JSON.stringify(err)}`)
+                    console.log(`${$.name} API请求失败，请检查网路重试`)
+                } else {
+                    await $.wait(2000)
+                    resolve(data);
                 }
             } catch (e) {
                 $.logErr(e, resp)
