@@ -41,16 +41,16 @@ async function main() {
         }
         console.log("————————————")
         console.log('开始任务')
-        let articleList = await taskPost('/latest?pageNum=1&pageSize=5',{})
+        let articleList = await taskPost('/post/latest?pageNum=1&pageSize=5',{})
         for (const article of articleList.rows) {
-            let view = await taskPost(`/info/${article.id}`,{})
+            let view = await taskPost(`/post/info/${article.id}`,{})
             console.log(`浏览帖子：${view.msg}`)
             let text = await textGet();
             if (!text || text.length < 10) {
                 text = '如果觉得没有朋友，就去找喜欢的人表白，对方会提出和你做朋友的。'
             }
             console.log(`获取每日一言：${text}`)
-            let comment = await taskPost(`/comment/${article.id}`,{"content":text,"picUrls":[],"busId":article.id,"postId":article.id})
+            let comment = await taskPost(`/post/comment/${article.id}`,{"content":text,"picUrls":[],"busId":article.id,"postId":article.id})
             console.log(`发布评论：${comment.msg}`)
         }
         for (let i = 0; i < 2; i++) {
@@ -60,8 +60,13 @@ async function main() {
             }
             console.log(`获取每日一言：${text}`)
             let content = `<p>${text}</p>`
-            let addPost = await taskPost(`/addPost`,{"userId":id,"title":"每日一言","content":content,"tribeId":111,"videoUrl":null,"videoPosterUrl":null})
+            let addPost = await taskPost(`/post/addPost`,{"userId":id,"title":"","content":content,"tribeId":111,"videoUrl":null,"videoPosterUrl":null,"topicName":"每日签到处","topicId":57})
             console.log(`发布帖子：${addPost.msg}`)
+        }
+        let postList = await taskPost('/home/postList?pageNum=1&pageSize=10',{})
+        for (const post of postList.rows) {
+            let delPost = await taskPost(`/post/delPost/${post.id}`,{})
+            console.log(`删除帖子：${delPost.msg}`)
         }
         console.log("————————————")
         console.log("查询积分")
@@ -142,7 +147,7 @@ async function commonPost(url,body) {
 async function taskPost(url,body) {
     return new Promise(resolve => {
         const options = {
-            url: `https://technology.ipason.com/admin/app/wx/post${url}`,
+            url: `https://technology.ipason.com/admin/app/wx${url}`,
             headers : {
                 'content-type': 'application/json',
                 'xweb_xhr': '1',
