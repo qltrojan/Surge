@@ -17,7 +17,7 @@ async function main() {
     console.log(time);
     for (const packet of index.data.pointExVirtualAct.actPackets) {
         console.log(packet.title);
-        if (packet.title.includes('礼品卡')) {
+        if (packet.title.includes('19.00元礼品卡') || packet.title.includes('20.00元礼品卡')) {
             await sendMsg(time);
             break
         }

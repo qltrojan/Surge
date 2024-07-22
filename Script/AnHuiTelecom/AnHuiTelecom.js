@@ -1,5 +1,5 @@
 /**
- * cron "54 8,18 * * *" AnHuiTelecom.js
+ * cron "1 10,18 * * *" AnHuiTelecom.js
  * export AnHuiTelecom='[{"id":"1","cookie":"1"},{"id":"2","cookie":"2"}]'
  */
 const $ = new Env('安徽电信')
@@ -26,8 +26,11 @@ async function main() {
         let list = await commonGet('/AhdxTjyl/myGoldNew.do?code=051dqZ000iD1fS1mIt0008I2m71dqZ0k')
         for (const item of list.data.bigList['权益金']) {
             console.log(`商品：${item.cpname} id：${item.aid} 所需星钻：${item.xzneed}`)
-            let exchange = await commonGet(`/AhdxTjyl/dhGoldNew.do?cpstatus=${item.cpstatus}&cpname=${item.cpname}&cztype=1&aid=${item.aid}`)
-            console.log(exchange)
+            let exchange = await commonGet(`/AhdxTjyl/dhGoldNew.do?cpstatus=${item.cpstatus}&cpname=${item.cpname}&cztype=2&aid=${item.aid}`)
+            console.log(exchange.msg)
+            if (exchange.code == 1) {
+                await sendMsg(`用户：${id} 兑换成功: ${item.cpname}`);
+            }
         }
         console.log(`拥有星钻：${list.data.xzNum}\n`)
         notice += `用户：${id} 拥有星钻: ${list.data.xzNum}\n`
