@@ -30,14 +30,6 @@ async function main() {
         phone = item.split("&")[0]
         password = item.split("&")[1]
         console.log(`用户：${phone}登录`)
-        let getImage = await commonGet(`vcode_type=zteLogin&method=user.vcode&format=json&v=v1`)
-        let code = await slidePost({image: (getImage.data.base64Image).split(',')[1]})
-        if (!code) {
-            console.log("ddddocr服务异常")
-            await sendMsg('ddddocr服务异常');
-            continue;
-        }
-        console.log(code)
         const encryptor = new (Utils.loadJSEncrypt());
         encryptor.setPublicKey('-----BEGIN PUBLIC KEY-----\n' +
             'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCqGKukO1De7zhZj6+H0qtjTkVxwTCpvKe4eCZ0\n' +
@@ -45,13 +37,25 @@ async function main() {
             '3j+skZ6UtW+5u09lHNsj6tQ51s1SPrCBkedbNf0Tp0GbMJDyR4e9T04ZZwIDAQAB\n' +
             '-----END PUBLIC KEY-----');
         password = encodeURIComponent(encryptor.encrypt(password))
-        let login = await commonPost(`phone=${phone}&password=${password}&vcode=${code.result}&sessionId=${getImage.data.sess_id}&platform=app&method=zte.phone.password.login&format=json&v=v1`)
-        if (login.errorcode != 0) {
-            console.log(login.msg)
-            continue
+        let success = false;
+        while (!success) {
+            let getImage = await commonGet(`vcode_type=zteLogin&method=user.vcode&format=json&v=v1`)
+            let code = await slidePost({image: (getImage.data.base64Image).split(',')[1]})
+            if (!code) {
+                console.log("ddddocr服务异常")
+                await sendMsg('ddddocr服务异常');
+                continue;
+            }
+            console.log(code)
+            let login = await commonPost(`phone=${phone}&password=${password}&vcode=${code.result}&sessionId=${getImage.data.sess_id}&platform=app&method=zte.phone.password.login&format=json&v=v1`)
+            if (login.errorcode != 0) {
+                console.log(login.msg)
+                continue
+            }
+            console.log('登录成功')
+            token = login.data.accessToken;
+            success = true
         }
-        console.log('登录成功')
-        token = login.data.accessToken;
         tokenArr.push({phone: phone, token: token})
         let create = await commonGet('st_id=14&openid=1&tmplIds=%5B%5D&method=shareTeaming.create.team&format=json&v=v1');
         if (create.errorcode == 0) {
