@@ -1,12 +1,10 @@
 /**
- * cron "8 6,14,22 * * *" YongPai.js
- * export YongPai="账号1&密码1&支付宝姓名1&支付宝账号1 账号2&密码2&支付宝姓名2&支付宝账号2"
- * export YongPaiDeviceId="设备id"
+ * cron "8 8,14,22 * * *" YongPai.js
+ * export YongPai="账号1&密码1&支付宝姓名1&支付宝账号1&设备id1 账号2&密码2&支付宝姓名2&支付宝账号2&设备id2"
  */
 const $ = new Env('甬派')
 const YongPai = ($.isNode() ? process.env.YongPai : $.getdata("YongPai")) || '';
-let deviceId = ($.isNode() ? process.env.YongPaiDeviceId : $.getdata("YongPaiDeviceId")) || '';
-window = {};
+let deviceId = '';
 let token = ''
 let lotteryCookie = ''
 let lotteryId = ''
@@ -32,6 +30,11 @@ async function main() {
     let arr = YongPai.split(" ");
     for (const item of arr) {
         console.log("随机生成设备")
+        phone = item.split("&")[0]
+        password = item.split("&")[1]
+        realname = item.split("&")[2]
+        aliPay = item.split("&")[3]
+        deviceId = item.split("&")[4]
         let randomDevice = generateRandomDevice();
         if (!deviceId) {
             deviceId = randomDevice.deviceId;
@@ -39,10 +42,6 @@ async function main() {
         model = randomDevice.model;
         console.log(deviceId)
         console.log(model)
-        phone = item.split("&")[0]
-        password = item.split("&")[1]
-        realname = item.split("&")[2]
-        aliPay = item.split("&")[3] || phone
         console.log(`用户：${phone}开始任务`)
         console.log("登录")
         let time = Date.now();
@@ -63,6 +62,67 @@ async function main() {
         }
         console.log('登录成功')
         token = login.data;
+        console.log("————————————")
+        console.log("开始任务")
+        let readFinish = true;
+        let likeFinish = true;
+        let shareFinish = true;
+        let taskList = await commonGet(`/yongpai-user/api/user/my_level?userId=${userId}`)
+        for (let task of taskList.data.scoreRule) {
+            console.log(`任务：${task.type}`)
+            if (task.dayscore == task.usedScore) {
+                console.log(`任务已完成`)
+                continue;
+            }
+            console.log(`任务进度：${task.usedScore}/${task.dayscore}`)
+            if (task.type == '阅读新闻') {
+                readFinish = false;
+            }
+            if (task.type == '点赞') {
+                likeFinish = false;
+            }
+            if (task.type == '分享新闻') {
+                shareFinish = false;
+            }
+        }
+        if (!readFinish || !likeFinish || !shareFinish) {
+            let channelIds = [2,20183,20184,4,32]
+            let count = 30
+            for (const channelId of channelIds) {
+                let articleList = await commonGet(`/yongpai-news/api/news/list?channelId=${channelId}&currentPage=1&timestamp=0`)
+                for (const article of articleList.data.content) {
+                    if (!isToday(article.sourcetime)) {
+                        continue;
+                    }
+                    if (count == 0) {
+                        break;
+                    }
+                    console.log(`文章：${article.title}`)
+                    let articleId = article.id;
+                    if (!readFinish) {
+                        let read = await commonGet(`/yongpai-news/api/news/detail?newsId=${articleId}&userId=${userId}&deviceId=${deviceId}`)
+                        console.log(`阅读：${read.message}`)
+                    }
+                    if (!likeFinish) {
+                        let like = await commonGet(`/yongpai-ugc/api/praise/save_news?userId=${userId}&newsId=${articleId}&deviceId=${deviceId}`)
+                        if (like.code == 0) {
+                            count--;
+                            console.log(`点赞获得：${like?.data?.score}积分`)
+                        } else {
+                            console.log(like.message)
+                        }
+                    }
+                    if (!shareFinish) {
+                        let share = await commonGet(`/yongpai-ugc/api/forward/news?userId=${userId}&newsId=${articleId}&source=4`)
+                        if (share.code == 0) {
+                            console.log(`分享获得：${share?.data}积分`)
+                        } else {
+                            console.log(share.message)
+                        }
+                    }
+                }
+            }
+        }
         let newsId = ''
         let newsList = await commonGet('/yongpai-news/api/news/list?channelId=4&currentPage=1&timestamp=0');
         for (const news of newsList.data.content) {
@@ -72,6 +132,8 @@ async function main() {
                 break
             }
         }
+        console.log("————————————")
+        console.log("阅读抽奖")
         console.log("获取id")
         if (!newsId) {
             console.log('未找到id')
@@ -140,67 +202,6 @@ async function main() {
                     }
                 } else {
                     console.log(lottery.message)
-                }
-            }
-        }
-        console.log("————————————")
-        console.log("开始任务")
-        let readFinish = true;
-        let likeFinish = true;
-        let shareFinish = true;
-        let taskList = await commonGet(`/yongpai-user/api/user/my_level?userId=${userId}`)
-        for (let task of taskList.data.scoreRule) {
-            console.log(`任务：${task.type}`)
-            if (task.dayscore == task.usedScore) {
-                console.log(`任务已完成`)
-                continue;
-            }
-            console.log(`任务进度：${task.usedScore}/${task.dayscore}`)
-            if (task.type == '阅读新闻') {
-                readFinish = false;
-            }
-            if (task.type == '点赞') {
-                likeFinish = false;
-            }
-            if (task.type == '分享新闻') {
-                shareFinish = false;
-            }
-        }
-        if (!readFinish || !likeFinish || !shareFinish) {
-            let channelIds = [2,20183,20184,4,32]
-            let count = 30
-            for (const channelId of channelIds) {
-                let articleList = await commonGet(`/yongpai-news/api/news/list?channelId=${channelId}&currentPage=1&timestamp=0`)
-                for (const article of articleList.data.content) {
-                    if (!isToday(article.sourcetime)) {
-                        continue;
-                    }
-                    if (count == 0) {
-                        break;
-                    }
-                    console.log(`文章：${article.title}`)
-                    let articleId = article.id;
-                    if (!readFinish) {
-                        let read = await commonGet(`/yongpai-news/api/news/detail?newsId=${articleId}&userId=${userId}&deviceId=${deviceId}`)
-                        console.log(`阅读：${read.message}`)
-                    }
-                    if (!likeFinish) {
-                        let like = await commonGet(`/yongpai-ugc/api/praise/save_news?userId=${userId}&newsId=${articleId}&deviceId=${deviceId}`)
-                        if (like.code == 0) {
-                            count--;
-                            console.log(`点赞获得：${like?.data?.score}积分`)
-                        } else {
-                            console.log(like.message)
-                        }
-                    }
-                    if (!shareFinish) {
-                        let share = await commonGet(`/yongpai-ugc/api/forward/news?userId=${userId}&newsId=${articleId}&source=4`)
-                        if (share.code == 0) {
-                            console.log(`分享获得：${share?.data}积分`)
-                        } else {
-                            console.log(share.message)
-                        }
-                    }
                 }
             }
         }
