@@ -4,6 +4,7 @@
  */
 const $ = new Env('甬派')
 const YongPai = ($.isNode() ? process.env.YongPai : $.getdata("YongPai")) || '';
+window = {}
 let deviceId = '';
 let token = ''
 let lotteryCookie = ''
