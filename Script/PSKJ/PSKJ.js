@@ -61,7 +61,7 @@ async function main() {
             console.log(`获取每日一言：${text}`)
             let content = `<p>${text}</p>`
             let addPost = await taskPost(`/post/addPost`,{"userId":id,"title":"","content":content,"tribeId":111,"videoUrl":null,"videoPosterUrl":null,"topicName":"每日签到处","topicId":57})
-            console.log(`发布帖子：${addPost.msg}`)
+            console.log(`发布帖子：${addPost?.msg}`)
         }
         let postList = await taskPost('/home/postList?pageNum=1&pageSize=10',{})
         for (const post of postList.rows) {
@@ -161,7 +161,8 @@ async function taskPost(url,body) {
                 'Accept-Encoding': 'gzip, deflate, br',
                 'Accept-Language': 'zh-CN,zh;q=0.9',
             },
-            body: JSON.stringify(body)
+            body: JSON.stringify(body),
+            timeout: 60000
         }
         $.post(options, async (err, resp, data) => {
             try {
