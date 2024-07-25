@@ -51,6 +51,7 @@ async function main() {
                     console.log(`${sign.Code} ${sign.Message}  ${sign.Data?.Point}`)
                     break;
                 case '会员信息完善':
+                    await commonGet('/User/EditInfo')
                     let data = await commonPost('/User/DoEditInfo', {
                         "Birthday": getRandomBirthday(),
                         "Nickname": userInfo.Data.Nickname,
@@ -74,6 +75,7 @@ async function main() {
                         console.log(body1)
                         let data = await commonPost('/Bbs/Posting', body1)
                         console.log(`${data.Code} ${data.Message} `)
+                        await $.wait(Math.floor(Math.random() * 5000 + 10000));
                     }
 
                     break;
@@ -201,7 +203,7 @@ async function getCookie() {
     }
     const id = body.Data.Id;
     extracted(id, token, refreshToken);
-    await commonPost('/LuckyDraw/DoShareLuckDraw',{key:"9d543254-851c-4750-a893-05fa565d6a91"})
+    console.log(await commonPost('/LuckyDraw/DoShareLuckDraw',{key:"9d543254-851c-4750-a893-05fa565d6a91"}))
 }
 // 助力抽奖
 function DoShareLuckDraw(a,b) {
