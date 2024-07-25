@@ -187,11 +187,13 @@ function extracted(id, token, refreshToken) {
 }
 
 async function getCookie() {
-    const token = $request.headers["Authorization"] || $request.headers["authorization"];
-    const refreshToken = $request.headers["X-Authorization"] || $request.headers["x-authorization"];
+    let token = $request.headers["Authorization"] || $request.headers["authorization"];
+    let refreshToken = $request.headers["X-Authorization"] || $request.headers["x-authorization"];
     if (!token && !refreshToken) {
         return
     }
+    token =token.replace("Bearer ", "");
+    refreshToken = refreshToken.replace("Bearer ", "");
     const body = $.toObj($response.body);
     if (!body?.Data?.Id) {
         return
