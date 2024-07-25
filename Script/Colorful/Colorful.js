@@ -182,6 +182,7 @@ function extracted(id, token, refreshToken) {
         COLORFUL.push(newData)
         console.log(JSON.stringify(newData))
         $.msg($.name, `🎉新增用户${newData.id}成功!`, ``);
+        DoShareLuckDraw(token,refreshToken)
     }
     $.setjson(COLORFUL, "COLORFUL");
 }
@@ -200,7 +201,14 @@ async function getCookie() {
     }
     const id = body.Data.Id;
     extracted(id, token, refreshToken);
+    await commonPost('/LuckyDraw/DoShareLuckDraw',{key:"9d543254-851c-4750-a893-05fa565d6a91"})
 }
+// 助力抽奖
+function DoShareLuckDraw(a,b) {
+    token = a;
+    refreshToken = b
+}
+
 
 async function commonPost(url, body = {}) {
     return new Promise(resolve => {
