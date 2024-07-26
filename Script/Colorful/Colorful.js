@@ -42,7 +42,7 @@ async function main() {
         }
         for (const point of taskPoint.Data?.DataList) {
             console.log(`${point.Name} ${point.Title} ${point.PerPoint}`)
-            if (point.DayMaxPointTotal === point.DayGetPointTotal) {
+            if ((point.DayMaxPointTotal === point.DayGetPointTotal && point.LinkType==1)|| ( point.PerPoint === point.DayGetPointTotal && point.LinkType==2)) {
                 continue
             }
             switch (point.Name) {
@@ -54,7 +54,7 @@ async function main() {
                     await commonGet('/User/EditInfo')
                     let data = await commonPost('/User/DoEditInfo', {
                         "Birthday": getRandomBirthday(),
-                        "Nickname": userInfo.Data.Nickname,
+                        "Nickname": userInfo.Data.NickName,
                         "Sex": 1
                     })
                     console.log(`${data.Code} ${data.Message} `)
