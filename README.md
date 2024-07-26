@@ -62,6 +62,7 @@
 | 甬派 | [YongPai](https://github.com/xzxxn777/Surge/blob/main/Script/YongPai/YongPai.js) | ✅(2024/07/20) | ✅️ |
 | 今日越城 | [YueCheng](https://github.com/xzxxn777/Surge/blob/main/Script/YueCheng/YueCheng.js) | ✅(2024/07/20) | ✅️ |
 | 七彩虹商城 | [Colorful](https://github.com/xzxxn777/Surge/blob/main/Script/Colorful/Colorful.js) | ✅(2024/07/25) | ✅️ |
+| 大潮 | [DaChao](https://github.com/xzxxn777/Surge/blob/main/Script/DaChao/DaChao.js) | ✅(2024/07/26) | ✅️ |
 
 ------
 ### [一键订阅boxjs](http://boxjs.com/#/sub/add/https://raw.githubusercontent.com/xzxxn777/Surge/main/xzxxn.json)
