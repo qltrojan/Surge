@@ -5,7 +5,7 @@
  * export Cheryfs_GIFTID="754492665391370240"//运行脚本查看
  */
 const $ = new Env('好奇车生活兑换')
-const Cheryfs = ($.isNode() ? JSON.parse(process.env.Cheryfs) : $.getjson("Cheryfs")) || [];
+const Cheryfs=[{"accountId":"94f172ea1fa709234b8477c7f1f4270e9846fb63c0bd54647955e19dbaa9c582"},{"accountId":"fc023e2cab27b624b64ee24ccaadc9151b3612ac3f0b559ec9c29a91c8d09c66"},{"accountId":"0d3cb150c6dc2a2feb5d25e7e1fb8d513e7cd1c21bbbe5c4feab29ef80947e1e"},{"accountId":"c15999edcc893601fdc43f0f60ca139955b3fc5a8d0952f3d93e2c86b478da2d"}]
 let Cheryfs_Acc = ($.isNode() ? process.env.Cheryfs_Acc : $.getdata("Cheryfs_Acc")) || 0;
 let Cheryfs_GIFTID = ($.isNode() ? process.env.Cheryfs_GIFTID : $.getdata("Cheryfs_GIFTID")) || '754492665391370240';
 let accountId = ''
@@ -54,8 +54,8 @@ async function commonGet(url) {
                     console.log(`${JSON.stringify(err)}`)
                     console.log(`${$.name} API请求失败，请检查网路重试`)
                 } else {
-                    data = JSON.parse(data)
                     console.log(data)
+                    data = JSON.parse(data)
                     resolve(data);
                 }
             } catch (e) {

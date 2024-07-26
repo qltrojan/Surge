@@ -61,6 +61,7 @@
 | 红旗智联 | [HQZL](https://github.com/xzxxn777/Surge/blob/main/Script/HQZL/HQZL.js) | ✅(2024/07/19) | ✅️ |
 | 甬派 | [YongPai](https://github.com/xzxxn777/Surge/blob/main/Script/YongPai/YongPai.js) | ✅(2024/07/20) | ✅️ |
 | 今日越城 | [YueCheng](https://github.com/xzxxn777/Surge/blob/main/Script/YueCheng/YueCheng.js) | ✅(2024/07/20) | ✅️ |
+| 七彩虹商城 | [Colorful](https://github.com/xzxxn777/Surge/blob/main/Script/Colorful/Colorful.js) | ✅(2024/07/25) | ✅️ |
 
 ------
 ### [一键订阅boxjs](http://boxjs.com/#/sub/add/https://raw.githubusercontent.com/xzxxn777/Surge/main/xzxxn.json)
