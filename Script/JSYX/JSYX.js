@@ -11,6 +11,7 @@ let openId = ''
 let token = ''
 let notice = '';
 !(async () => {
+    Utils = await loadUtils();
     if (typeof $request != "undefined") {
         await getCookie();
     } else {
@@ -20,7 +21,6 @@ let notice = '';
 
 async function main() {
     console.log('作者：@xzxxn777\n频道：https://t.me/xzxxn777\n群组：https://t.me/xzxxn7777\n自用机场推荐：https://xn--diqv0fut7b.com\n')
-    Utils = await loadUtils();
     for (const item of JSYX) {
         id = item.id;
         openId = item.openId;
