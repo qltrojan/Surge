@@ -517,6 +517,10 @@
             {
               "key": "YueCheng",
               "label": "今日越城"
+            },
+            {
+              "key": "DaChao",
+              "label": "大潮"
             }
           ],
           "desc": "选择app"
@@ -732,6 +736,35 @@
       "icons": [
         "https://raw.githubusercontent.com/xzxxn777/Surge/main/Script/YueCheng/YueCheng.png",
         "https://raw.githubusercontent.com/xzxxn777/Surge/main/Script/YueCheng/YueCheng.png"
+      ]
+    },
+    {
+      "id": "DaChao",
+      "name": "大潮",
+      "keys": [
+        "DaChao"
+      ],
+      "scripts": [
+        {
+          "name": "大潮-手动执行",
+          "script": "https://raw.githubusercontent.com/xzxxn777/Surge/main/Script/DaChao/DaChao.js"
+        }
+      ],
+      "settings": [
+        {
+          "id": "DaChao",
+          "name": "账号密码",
+          "val": "",
+          "type": "text",
+          "desc": "格式:手机号&密码 手机号&密码"
+        }
+      ],
+      "author": "@xzxxn777",
+      "repo": "https://github.com/xzxxn777/Surge",
+      "script": "https://raw.githubusercontent.com/xzxxn777/Surge/main/Script/DaChao/DaChao.js",
+      "icons": [
+        "https://raw.githubusercontent.com/xzxxn777/Surge/main/Script/DaChao/DaChao.png",
+        "https://raw.githubusercontent.com/xzxxn777/Surge/main/Script/DaChao/DaChao.png"
       ]
     }
   ]

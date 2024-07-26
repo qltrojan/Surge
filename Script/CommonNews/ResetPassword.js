@@ -52,6 +52,9 @@ async function main() {
     } else if (appType == "YueCheng") {
         tenantId = '31'
         clientId = '48'
+    } else if (appType == "DaChao") {
+        tenantId = '94'
+        clientId = '10048'
     }
     Utils = await loadUtils();
     console.log("随机生成UA")
