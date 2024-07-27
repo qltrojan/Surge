@@ -58,6 +58,16 @@ async function main() {
         console.log("农场详情")
         params = getSign();
         let GetUserFarmInitData = await commonPost('/JDEMaxwellApi/GetUserFarmInitData',{"openId":openId,"timestamp":params.time,"sign":params.sign});
+        if (GetUserFarmInitData.msg) {
+            console.log('咖啡树已收获，开始重新种植')
+            let CreateNewTree = await commonPost('/JDEMaxwellApi/CreateNewTree',{"openId":openId,"timestamp":params.time,"sign":params.sign});
+            if (CreateNewTree.state) {
+                console.log(`种树成功`)
+            } else {
+                console.log(CreateNewTree.msg)
+            }
+            GetUserFarmInitData = await commonPost('/JDEMaxwellApi/GetUserFarmInitData',{"openId":openId,"timestamp":params.time,"sign":params.sign});
+        }
         console.log(`拥有水滴：${GetUserFarmInitData.data1.canUseWaters}`)
         console.log(`当前状态：${GetUserFarmInitData.data.statusName}期 进度：${GetUserFarmInitData.data.progressBar}%`)
         console.log("————————————")
@@ -81,6 +91,8 @@ async function main() {
                 }
             }
         }
+        GetUserFarmInitData = await commonPost('/JDEMaxwellApi/GetUserFarmInitData',{"openId":openId,"timestamp":params.time,"sign":params.sign});
+        console.log(`当前状态：${GetUserFarmInitData.data.statusName}期 进度：${GetUserFarmInitData.data.progressBar}%`)
         console.log("————————————")
         console.log("积分查询")
         params = getSign();
