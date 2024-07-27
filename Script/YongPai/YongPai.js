@@ -147,16 +147,17 @@ async function main() {
                 lotteryId = match[0].split('=')[1];
             }
             console.log(lotteryId)
-            console.log("阅读登录")
-            let lotteryLogin = await lotteryLoginGet(`userId=${userId}&dbredirect=https://92722.activity-12.m.duiba.com.cn/hdtool/index?id=${lotteryId}&dbnewopen`);
-            lotteryCookie = ''
-            lotteryCookie = await lotteryCookieGet(lotteryLogin.data);
-            console.log("获取抽奖key")
-            let key = await keyGet(`https://92722.activity-12.m.duiba.com.cn/hdtool/index?id=${lotteryId}&dbnewopen&from=login&spm=92722.1.1.1`)
-            let lottery = await lotteryPost(`/hdtool/ajaxElement?_=${Date.now()}`,`hdType=dev&hdToolId=&preview=false&actId=${lotteryId}&adslotId=`)
-            let lotteryCount = lottery.element.freeLimit;
-            console.log(`拥有${lotteryCount}次抽奖`)
+            let lotteryCount = 1
             while (lotteryCount > 0) {
+                console.log("阅读登录")
+                let lotteryLogin = await lotteryLoginGet(`userId=${userId}&dbredirect=https://92722.activity-12.m.duiba.com.cn/hdtool/index?id=${lotteryId}&dbnewopen`);
+                lotteryCookie = ''
+                lotteryCookie = await lotteryCookieGet(lotteryLogin.data);
+                console.log("获取抽奖key")
+                let key = await keyGet(`https://92722.activity-12.m.duiba.com.cn/hdtool/index?id=${lotteryId}&dbnewopen&from=login&spm=92722.1.1.1`)
+                let lottery = await lotteryPost(`/hdtool/ajaxElement?_=${Date.now()}`,`hdType=dev&hdToolId=&preview=false&actId=${lotteryId}&adslotId=`)
+                lotteryCount = lottery.element.freeLimit;
+                console.log(`拥有${lotteryCount}次抽奖`)
                 for (let i = 0; i < lottery.element.freeLimit; i++) {
                     let getTokenNew = await lotteryPost(`/hdtool/ctoken/getTokenNew`,`timestamp=${Date.now()}&activityId=${lotteryId}&activityType=hdtool&consumerId=4136126583`)
                     eval(getTokenNew.token);
