@@ -143,15 +143,19 @@ async function main() {
                     lottery = await jinhuaPost(`/api/lotterybigwheel/_ac_lottery`,{"id":lotteryId,"app_id":jinhuaAppId,"module":"study","optionHash":""})
                     if (lottery.data.code) {
                         console.log(`抽奖获得：${lottery.data.title}`)
+                        notice += `用户：${phone_number} 抽奖获得：${lottery.data.title}\n`
                     } else {
                         console.log(`抽奖获得：${lottery.data.tip_title}`)
+                        notice += `用户：${phone_number} 抽奖获得：${lottery.data.tip_title}\n`
                     }
                 }
             } else {
                 if (lottery.data.code) {
                     console.log(`抽奖获得：${lottery.data.title}`)
+                    notice += `用户：${phone_number} 抽奖获得：${lottery.data.title}\n`
                 } else {
                     console.log(`抽奖获得：${lottery.data.tip_title}`)
+                    notice += `用户：${phone_number} 抽奖获得：${lottery.data.tip_title}\n`
                 }
             }
         }
@@ -210,6 +214,7 @@ async function main() {
                         }
                         if (getOrderStatus.lottery.type == 'alipay') {
                             console.log(`抽奖获得支付宝红包：${getOrderStatus.lottery.title}`)
+                            notice += `用户：${phone_number} 抽奖获得支付宝红包：${getOrderStatus.lottery.title}\n`
                             let url = getOrderStatus.lottery.link;
                             let urlStr = url.split('?')[1];
                             let result = {};
@@ -237,64 +242,64 @@ async function main() {
                 console.log(lottery.message)
             }
         }
-        console.log("————————————")
-        console.log("开始任务")
-        let readFinish = true;
-        let likeFinish = true;
-        let shareFinish = true;
-        let taskList = await commonGet('/api/user_center/task?type=1&current=1&size=20')
-        for (let task of taskList.data.list) {
-            console.log(`任务：${task.name}`)
-            if (task.completed == 1) {
-                console.log(`任务已完成`)
-                continue;
-            }
-            console.log(`任务进度：${task.finish_times}/${task.frequency}`)
-            if (task.name == '新闻资讯阅读') {
-                readFinish = false;
-            }
-            if (task.name == '新闻资讯点赞') {
-                likeFinish = false;
-            }
-            if (task.name == '分享资讯给好友') {
-                shareFinish = false;
-            }
-        }
-        if (!readFinish || !likeFinish || !shareFinish) {
-            let articleList = await commonGet('/api/article/channel_list?channel_id=5dbf7fdfb1985007455762fd&isDiFangHao=false&is_new=true&list_count=0&size=20')
-            for (const article of articleList.data.article_list) {
-                let articleId = article.id;
-                if (!readFinish) {
-                    let read = await commonGet(`/api/article/read_time?channel_article_id=${articleId}&is_end=true&read_time=3051`)
-                    if (read.data.score_notify) {
-                        console.log(`阅读获得：${read.data?.score_notify?.integral}积分`)
-                    } else {
-                        console.log(`文章已经阅读过了`)
-                    }
-                }
-                if (!likeFinish) {
-                    let like = await commonPost(`/api/favorite/like`,`action=true&id=${articleId}`)
-                    if (like.data) {
-                        console.log(`点赞获得：${like.data?.score_notify?.integral}积分`)
-                    } else {
-                        console.log(`文章已经点赞过了`)
-                    }
-                }
-                if (!shareFinish) {
-                    let share = await commonPost(`/api/user_mumber/doTask`,`memberType=3&member_type=3&target_id==${articleId}`)
-                    if (share.data.score_notify) {
-                        console.log(`分享获得：${share.data?.score_notify?.integral}积分`)
-                    } else {
-                        console.log(`文章已经分享过了`)
-                    }
-                }
-            }
-        }
-        console.log("————————————")
-        console.log("查询积分")
-        let detail = await commonGet('/api/user_mumber/account_detail')
-        console.log(`拥有积分：${detail.data.rst.total_integral}\n`)
-        notice += `用户：${phone_number} 积分：${detail.data.rst.total_integral}\n`
+        // console.log("————————————")
+        // console.log("开始任务")
+        // let readFinish = true;
+        // let likeFinish = true;
+        // let shareFinish = true;
+        // let taskList = await commonGet('/api/user_center/task?type=1&current=1&size=20')
+        // for (let task of taskList.data.list) {
+        //     console.log(`任务：${task.name}`)
+        //     if (task.completed == 1) {
+        //         console.log(`任务已完成`)
+        //         continue;
+        //     }
+        //     console.log(`任务进度：${task.finish_times}/${task.frequency}`)
+        //     if (task.name == '新闻资讯阅读') {
+        //         readFinish = false;
+        //     }
+        //     if (task.name == '新闻资讯点赞') {
+        //         likeFinish = false;
+        //     }
+        //     if (task.name == '分享资讯给好友') {
+        //         shareFinish = false;
+        //     }
+        // }
+        // if (!readFinish || !likeFinish || !shareFinish) {
+        //     let articleList = await commonGet('/api/article/channel_list?channel_id=5dbf7fdfb1985007455762fd&isDiFangHao=false&is_new=true&list_count=0&size=20')
+        //     for (const article of articleList.data.article_list) {
+        //         let articleId = article.id;
+        //         if (!readFinish) {
+        //             let read = await commonGet(`/api/article/read_time?channel_article_id=${articleId}&is_end=true&read_time=3051`)
+        //             if (read.data.score_notify) {
+        //                 console.log(`阅读获得：${read.data?.score_notify?.integral}积分`)
+        //             } else {
+        //                 console.log(`文章已经阅读过了`)
+        //             }
+        //         }
+        //         if (!likeFinish) {
+        //             let like = await commonPost(`/api/favorite/like`,`action=true&id=${articleId}`)
+        //             if (like.data) {
+        //                 console.log(`点赞获得：${like.data?.score_notify?.integral}积分`)
+        //             } else {
+        //                 console.log(`文章已经点赞过了`)
+        //             }
+        //         }
+        //         if (!shareFinish) {
+        //             let share = await commonPost(`/api/user_mumber/doTask`,`memberType=3&member_type=3&target_id==${articleId}`)
+        //             if (share.data.score_notify) {
+        //                 console.log(`分享获得：${share.data?.score_notify?.integral}积分`)
+        //             } else {
+        //                 console.log(`文章已经分享过了`)
+        //             }
+        //         }
+        //     }
+        // }
+        // console.log("————————————")
+        // console.log("查询积分")
+        // let detail = await commonGet('/api/user_mumber/account_detail')
+        // console.log(`拥有积分：${detail.data.rst.total_integral}\n`)
+        // notice += `用户：${phone_number} 积分：${detail.data.rst.total_integral}\n`
     }
     if (notice) {
         await sendMsg(notice);
