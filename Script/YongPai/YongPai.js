@@ -14,6 +14,7 @@ let password = ''
 let realname = ''
 let aliPay = ''
 let userId = ''
+let consumerId = ''
 let name = ''
 let model = ''
 let notice = ''
@@ -157,10 +158,10 @@ async function main() {
             lotteryCount = lottery.element.freeLimit;
             console.log(`拥有${lotteryCount}次抽奖`)
             for (let i = 0; i < lottery.element.freeLimit; i++) {
-                let getTokenNew = await lotteryPost(`/hdtool/ctoken/getTokenNew`,`timestamp=${Date.now()}&activityId=${lotteryId}&activityType=hdtool&consumerId=4136126583`)
+                let getTokenNew = await lotteryPost(`/hdtool/ctoken/getTokenNew`,`timestamp=${Date.now()}&activityId=${lotteryId}&activityType=hdtool&consumerId=${consumerId}`)
                 eval(getTokenNew.token);
                 let token = window[key];
-                let lottery = await lotteryPost(`/hdtool/doJoin?dpm=92722.3.1.0&activityId=${lotteryId}&_=${Date.now()}`,`actId=${lotteryId}&oaId=${lotteryId}&activityType=hdtool&consumerId=4136126583&token=${token}`)
+                let lottery = await lotteryPost(`/hdtool/doJoin?dpm=92722.3.1.0&activityId=${lotteryId}&_=${Date.now()}`,`actId=${lotteryId}&oaId=${lotteryId}&activityType=hdtool&consumerId=${consumerId}&token=${token}`)
                 if (lottery.success) {
                     if (!lottery.orderId) {
                         console.log(lottery.message)
@@ -455,6 +456,15 @@ async function keyGet(url) {
                     eval(code)
                     let key = /var\s+key\s+=\s+'([^']+)';/.exec(getDuibaToken.toString())[1];
                     console.log(key)
+                    console.log('获取consumerId')
+                    const regex = /consumerId:'(\d+)'/;
+                    const match = data.match(regex);
+                    if (match) {
+                        consumerId = match[1];
+                    } else {
+                        consumerId = '4136126583'
+                    }
+                    console.log(consumerId)
                     resolve(key);
                 }
             } catch (e) {
