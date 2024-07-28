@@ -182,6 +182,7 @@ async function main() {
             const match = content.match(/id%3D(\d+)%26dbnewopen/);
             if (match) {
                 activityId = match[1];
+                console.log(`activityId：${activityId}`)
             } else {
                 console.log("未匹配到activityId");
                 continue
@@ -200,7 +201,7 @@ async function main() {
             if (lottery.success) {
                 if (!lottery.orderId) {
                     console.log(lottery.message)
-                    break
+                    continue
                 }
                 let orderId = lottery.orderId;
                 let result = 0;
@@ -242,6 +243,7 @@ async function main() {
             } else {
                 console.log(lottery.message)
             }
+            await $.wait(2000)
         }
         // console.log("————————————")
         // console.log("开始任务")
