@@ -27,6 +27,7 @@ let jinhuaKey = '35c782a2'
 let jinhuaToken = ''
 let activityCookie = ''
 let activityId = ''
+let consumerId = ''
 !(async () => {
     await main();
 })().catch((e) => {$.log(e)}).finally(() => {$.done({});});
@@ -192,10 +193,10 @@ async function main() {
             activityCookie = await activityCookieGet(location);
             console.log("获取抽奖key")
             let key = await keyGet(`https://95337.activity-42.m.duiba.com.cn/hdtool/index?id=${activityId}&dbnewopen&from=login&spm=95337.1.1.1`)
-            let getTokenNew = await activityPost(`/hdtool/ctoken/getTokenNew`,`timestamp=${Date.now()}&activityId=${activityId}&activityType=hdtool&consumerId=4135312778`)
+            let getTokenNew = await activityPost(`/hdtool/ctoken/getTokenNew`,`timestamp=${Date.now()}&activityId=${activityId}&activityType=hdtool&consumerId=${consumerId}`)
             eval(getTokenNew.token);
             let token = window[key];
-            let lottery = await activityPost(`/hdtool/dy/doJoin?dpm=95337.3.1.0&activityId=${activityId}&_=${Date.now()}`,`actId=${activityId}&oaId=${activityId}&activityType=hdtool&consumerId=4135312778&token=${token}`)
+            let lottery = await activityPost(`/hdtool/dy/doJoin?dpm=95337.3.1.0&activityId=${activityId}&_=${Date.now()}`,`actId=${activityId}&oaId=${activityId}&activityType=hdtool&consumerId=${consumerId}&token=${token}`)
             if (lottery.success) {
                 if (!lottery.orderId) {
                     console.log(lottery.message)
@@ -679,6 +680,15 @@ async function keyGet(url) {
                     eval(code)
                     let key = /var\s+key\s+=\s+'([^']+)';/.exec(getDuibaToken.toString())[1];
                     console.log(key)
+                    console.log('获取consumerId')
+                    const regex = /consumerId:'(\d+)'/;
+                    const match = data.match(regex);
+                    if (match) {
+                        consumerId = match[1];
+                    } else {
+                        consumerId = '4135312778'
+                    }
+                    console.log(consumerId)
                     resolve(key);
                 }
             } catch (e) {
