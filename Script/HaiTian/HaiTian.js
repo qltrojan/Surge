@@ -9,7 +9,7 @@ let token = ''
 let hadayToken = ''
 let uuid = ''
 let notice = ''
-let activityId = 'jfcj0627'
+let activityId = 'jfcj0727'
 !(async () => {
     if (typeof $request != "undefined") {
         if ($request.url.includes('cmallapi')) {
@@ -78,7 +78,6 @@ async function main() {
         let adComment = await cmallwapPost('/haday/wx/comment/add',{"blogId":articleId,"comment":"每天一条走心评论。。。","pcommentId":"","pcommentUserId":"","pcommentUserName":"","pparentId":""})
         if (adComment.statusCode == 403) {
             await sendMsg(`用户：${id}\nhadayToken已过期，请重新获取`);
-            continue
         }
         console.log(adComment.errorMsg)
         console.log('关注官号')
