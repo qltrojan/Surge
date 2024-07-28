@@ -147,69 +147,64 @@ async function main() {
                 lotteryId = match[0].split('=')[1];
             }
             console.log(lotteryId)
-            let lotteryCount = 1
-            while (lotteryCount > 0) {
-                console.log("阅读登录")
-                let lotteryLogin = await lotteryLoginGet(`userId=${userId}&dbredirect=https://92722.activity-12.m.duiba.com.cn/hdtool/index?id=${lotteryId}&dbnewopen`);
-                lotteryCookie = ''
-                lotteryCookie = await lotteryCookieGet(lotteryLogin.data);
-                console.log("获取抽奖key")
-                let key = await keyGet(`https://92722.activity-12.m.duiba.com.cn/hdtool/index?id=${lotteryId}&dbnewopen&from=login&spm=92722.1.1.1`)
-                let lottery = await lotteryPost(`/hdtool/ajaxElement?_=${Date.now()}`,`hdType=dev&hdToolId=&preview=false&actId=${lotteryId}&adslotId=`)
-                lotteryCount = lottery.element.freeLimit;
-                console.log(`拥有${lotteryCount}次抽奖`)
-                for (let i = 0; i < lottery.element.freeLimit; i++) {
-                    let getTokenNew = await lotteryPost(`/hdtool/ctoken/getTokenNew`,`timestamp=${Date.now()}&activityId=${lotteryId}&activityType=hdtool&consumerId=4136126583`)
-                    eval(getTokenNew.token);
-                    let token = window[key];
-                    let lottery = await lotteryPost(`/hdtool/doJoin?dpm=92722.3.1.0&activityId=${lotteryId}&_=${Date.now()}`,`actId=${lotteryId}&oaId=${lotteryId}&activityType=hdtool&consumerId=4136126583&token=${token}`)
-                    if (lottery.success) {
-                        if (!lottery.orderId) {
-                            console.log(lottery.message)
-                            break
-                        }
-                        let orderId = lottery.orderId;
-                        let result = 0;
-                        while (result == 0) {
-                            let getOrderStatus = await lotteryPost(`/hdtool/getOrderStatus?_=${Date.now()}`,`orderId=${orderId}&adslotId=`)
-                            result = getOrderStatus.result;
-                            if (result == 0) {
-                                console.log(getOrderStatus.message)
-                            } else {
-                                if (getOrderStatus.lottery.type == 'thanks') {
-                                    console.log(`谢谢参与`)
+            console.log("阅读登录")
+            let lotteryLogin = await lotteryLoginGet(`userId=${userId}&dbredirect=https://92722.activity-12.m.duiba.com.cn/hdtool/index?id=${lotteryId}&dbnewopen`);
+            lotteryCookie = ''
+            lotteryCookie = await lotteryCookieGet(lotteryLogin.data);
+            console.log("获取抽奖key")
+            let key = await keyGet(`https://92722.activity-12.m.duiba.com.cn/hdtool/index?id=${lotteryId}&dbnewopen&from=login&spm=92722.1.1.1`)
+            let lottery = await lotteryPost(`/hdtool/ajaxElement?_=${Date.now()}`,`hdType=dev&hdToolId=&preview=false&actId=${lotteryId}&adslotId=`)
+            lotteryCount = lottery.element.freeLimit;
+            console.log(`拥有${lotteryCount}次抽奖`)
+            for (let i = 0; i < lottery.element.freeLimit; i++) {
+                let getTokenNew = await lotteryPost(`/hdtool/ctoken/getTokenNew`,`timestamp=${Date.now()}&activityId=${lotteryId}&activityType=hdtool&consumerId=4136126583`)
+                eval(getTokenNew.token);
+                let token = window[key];
+                let lottery = await lotteryPost(`/hdtool/doJoin?dpm=92722.3.1.0&activityId=${lotteryId}&_=${Date.now()}`,`actId=${lotteryId}&oaId=${lotteryId}&activityType=hdtool&consumerId=4136126583&token=${token}`)
+                if (lottery.success) {
+                    if (!lottery.orderId) {
+                        console.log(lottery.message)
+                        break
+                    }
+                    let orderId = lottery.orderId;
+                    let result = 0;
+                    while (result == 0) {
+                        let getOrderStatus = await lotteryPost(`/hdtool/getOrderStatus?_=${Date.now()}`,`orderId=${orderId}&adslotId=`)
+                        result = getOrderStatus.result;
+                        if (result == 0) {
+                            console.log(getOrderStatus.message)
+                        } else {
+                            if (getOrderStatus.lottery.type == 'thanks') {
+                                console.log(`谢谢参与`)
+                            }
+                            if (getOrderStatus.lottery.type == 'alipay') {
+                                console.log(`抽奖获得支付宝红包：${getOrderStatus.lottery.title}`)
+                                let url = getOrderStatus.lottery.link;
+                                let urlStr = url.split('?')[1];
+                                let result = {};
+                                let paramsArr = urlStr.split('&')
+                                for(let i = 0,len = paramsArr.length;i < len;i++){
+                                    let arr = paramsArr[i].split('=')
+                                    result[arr[0]] = arr[1];
                                 }
-                                if (getOrderStatus.lottery.type == 'alipay') {
-                                    console.log(`抽奖获得支付宝红包：${getOrderStatus.lottery.title}`)
-                                    let url = getOrderStatus.lottery.link;
-                                    let urlStr = url.split('?')[1];
-                                    let result = {};
-                                    let paramsArr = urlStr.split('&')
-                                    for(let i = 0,len = paramsArr.length;i < len;i++){
-                                        let arr = paramsArr[i].split('=')
-                                        result[arr[0]] = arr[1];
-                                    }
-                                    let recordId = result.recordId;
-                                    if (realname && aliPay) {
-                                        console.log("获取兑换key")
-                                        key = await keyGet(`https://92722.activity-12.m.duiba.com.cn/activity/takePrizeNew?recordId=${recordId}&dbnewopen`)
-                                        let getToken = await lotteryPost(`/ctoken/getToken.do`)
-                                        eval(getToken.token);
-                                        let token = window[key];
-                                        let award = await lotteryPost(`/activity/doTakePrize`,`alipay=${aliPay}&realname=${encodeURI(realname)}&recordId=${recordId}&token=${token}`)
-                                        console.log(award.message)
-                                    } else {
-                                        console.log(`请设置支付宝姓名和账号`)
-                                    }
+                                let recordId = result.recordId;
+                                if (realname && aliPay) {
+                                    console.log("获取兑换key")
+                                    key = await keyGet(`https://92722.activity-12.m.duiba.com.cn/activity/takePrizeNew?recordId=${recordId}&dbnewopen`)
+                                    let getToken = await lotteryPost(`/ctoken/getToken.do`)
+                                    eval(getToken.token);
+                                    let token = window[key];
+                                    let award = await lotteryPost(`/activity/doTakePrize`,`alipay=${aliPay}&realname=${encodeURI(realname)}&recordId=${recordId}&token=${token}`)
+                                    console.log(award.message)
+                                } else {
+                                    console.log(`请设置支付宝姓名和账号`)
                                 }
                             }
                         }
-                    } else {
-                        console.log(lottery.message)
                     }
+                } else {
+                    console.log(lottery.message)
                 }
-                lottery = await lotteryPost(`/hdtool/ajaxElement?_=${Date.now()}`,`hdType=dev&hdToolId=&preview=false&actId=${lotteryId}&adslotId=`)
-                lotteryCount = lottery.element.freeLimit;
             }
         }
         console.log("————————————")
