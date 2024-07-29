@@ -194,22 +194,21 @@ function extracted(id, token, refreshToken) {
 
 async function getCookie() {
     const requestBody = $request.body;
-    console.log( $request)
+    console.log(requestBody)
     if (!requestBody) {
         return
     }
-    const body = $.toObj($response.body);
-    console.log( body)
-    if ((!body?.Data?.RefreshToken) && (!body?.Data?.Token)) {
-        return
-    }
+    let login = await commonPost('/User/DecryptPhoneNumber', requestBody)
+    console.log(login)
+    token = login.Data.Token;
+    refreshToken = login.Data.RefreshToken
     let userInfo = await commonGet('/User/GetUserInfo')
     console.log(userInfo)
-    if (userInfo.Code === 401){
+    if (userInfo.Code === 401) {
         return
     }
     const id = userInfo.Data.Id;
-    const newData = {"id": id, "token": token, "refreshToken": refreshToken,body:requestBody};
+    const newData = {"id": id, "token": token, "refreshToken": refreshToken, body: requestBody};
     const index = COLORFUL.findIndex(e => e.id === newData.id);
     if (index !== -1) {
         if (COLORFUL[index].body === newData.body) {
