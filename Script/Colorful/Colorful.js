@@ -194,10 +194,12 @@ function extracted(id, token, refreshToken) {
 
 async function getCookie() {
     const requestBody = $request.body;
+    console.log( requestBody)
     if (!requestBody) {
         return
     }
     const body = $.toObj($response.body);
+    console.log( body)
     if ((!body?.Data?.RefreshToken) && (!body?.Data?.Token)) {
         return
     }
