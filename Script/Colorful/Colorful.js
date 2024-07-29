@@ -202,6 +202,10 @@ async function getCookie() {
     console.log(login)
     token = login.Data.Token;
     refreshToken = login.Data.RefreshToken
+    login = await commonPost('/User/DecryptPhoneNumber', JSON.parse(requestBody))
+    console.log(login)
+    token = login.Data.Token;
+    refreshToken = login.Data.RefreshToken
     let userInfo = await commonGet('/User/GetUserInfo')
     console.log(userInfo)
     if (userInfo.Code === 401) {
