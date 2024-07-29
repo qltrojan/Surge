@@ -198,11 +198,7 @@ async function getCookie() {
     if (!requestBody) {
         return
     }
-    let login = await commonPost('/User/DecryptPhoneNumber', requestBody)
-    console.log(login)
-    token = login.Data.Token;
-    refreshToken = login.Data.RefreshToken
-    login = await commonPost('/User/DecryptPhoneNumber', JSON.parse(requestBody))
+    let login = await commonPost('/User/DecryptPhoneNumber', JSON.parse(requestBody))
     console.log(login)
     token = login.Data.Token;
     refreshToken = login.Data.RefreshToken
