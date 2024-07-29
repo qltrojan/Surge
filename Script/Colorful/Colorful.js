@@ -194,7 +194,7 @@ function extracted(id, token, refreshToken) {
 
 async function getCookie() {
     const requestBody = $request.body;
-    console.log(requestBody)
+    console.log($request)
     if (!requestBody) {
         return
     }
