@@ -176,7 +176,7 @@ async function getToken() {
     const token = body.accessToken;
     const refreshToken = body.refreshToken;
     const newData = {"uuid": uuid, "token": token, "refreshToken":refreshToken};
-    const index = HaiTian.findIndex(e => e.id == newData.id);
+    const index = HaiTian.findIndex(e => e.uuid == newData.uuid);
     if (index !== -1) {
         if (HaiTian[index].token == newData.token) {
             return
