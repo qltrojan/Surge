@@ -172,7 +172,7 @@ async function getToken() {
         return
     }
     const body = $.toObj($response.body);
-    if (!body|| !body.accessToken) {
+    if (!body|| !body.uid) {
         return
     }
     const id = body.uid;
