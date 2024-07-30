@@ -29,14 +29,26 @@ async function main() {
         id = item.id;
         token = item.token;
         refreshToken = item.refreshToken
-        let userInfo = await commonGet('/User/GetUserInfo')
-        if (userInfo.Code == 401) {
-            await sendMsg(`用户：${id}\ntoken已过期，请重新获取`);
-            continue
+        let refreshLogin= await commonPost('/User/RefreshLoginTime',{"phone":""})
+        if (refreshLogin.Code == 401) {
+            if (!item.body){
+                await sendMsg(`用户：${id}\ntoken已过期，请重新获取`);
+                continue
+            }
+          let login=  await commonPost('/User/DecryptPhoneNumber',item.body)
+            if (login.Code == 401) {
+                await sendMsg(`用户：${id}\ntoken已过期，请重新获取`);
+                continue
+            }
+            token = login.Data.Token;
+            refreshToken = login.Data.RefreshToken
+          await commonPost('/User/RefreshLoginTime',{"phone":""})
         }
+
+        let userInfo = await commonGet('/User/GetUserInfo')
         console.log(`用户：${id}开始任务`)
         let taskPoint = await commonGet('/Sys/GetPointConfig')
-        if (taskPoint.Code == 401) {
+        if (taskPoint.Code === 401) {
             await sendMsg(`用户：${id}\ntoken已过期，请重新获取`);
             continue
         }
@@ -170,10 +182,36 @@ function getRandomBirthday() {
 }
 
 function extracted(id, token, refreshToken) {
-    const newData = {"id": id, "token": token, "refreshToken": refreshToken};
-    const index = COLORFUL.findIndex(e => e.id == newData.id);
+    const index = COLORFUL.findIndex(e => e.id === id);
+    if (index !== -1 && COLORFUL[index].token !== token) {
+        COLORFUL[index].token = token;
+        COLORFUL[index].refreshToken = refreshToken;
+        console.log(JSON.stringify(COLORFUL[index]))
+        $.msg($.name, `🎉用户${id}更新token成功!`, ``);
+        $.setjson(COLORFUL, "COLORFUL");
+    }
+}
+
+async function getCookie() {
+    const requestBody = $request.body;
+    console.log($request)
+    if (!requestBody) {
+        return
+    }
+    let login = await commonPost('/User/DecryptPhoneNumber', JSON.parse(requestBody))
+    console.log(login)
+    token = login.Data.Token;
+    refreshToken = login.Data.RefreshToken
+    let userInfo = await commonGet('/User/GetUserInfo')
+    console.log(userInfo)
+    if (userInfo.Code === 401) {
+        return
+    }
+    const id = userInfo.Data.Id;
+    const newData = {"id": id, "token": token, "refreshToken": refreshToken, body: requestBody};
+    const index = COLORFUL.findIndex(e => e.id === newData.id);
     if (index !== -1) {
-        if (COLORFUL[index].token === newData.token) {
+        if (COLORFUL[index].body === newData.body) {
             return
         } else {
             COLORFUL[index] = newData;
@@ -184,32 +222,10 @@ function extracted(id, token, refreshToken) {
         COLORFUL.push(newData)
         console.log(JSON.stringify(newData))
         $.msg($.name, `🎉新增用户${newData.id}成功!`, ``);
-        DoShareLuckDraw(token,refreshToken)
     }
     $.setjson(COLORFUL, "COLORFUL");
 }
 
-async function getCookie() {
-    let token = $request.headers["Authorization"] || $request.headers["authorization"];
-    let refreshToken = $request.headers["X-Authorization"] || $request.headers["x-authorization"];
-    if (!token && !refreshToken) {
-        return
-    }
-    token =token.replace("Bearer ", "");
-    refreshToken = refreshToken.replace("Bearer ", "");
-    const body = $.toObj($response.body);
-    if (!body?.Data?.Id) {
-        return
-    }
-    const id = body.Data.Id;
-    extracted(id, token, refreshToken);
-    console.log(await commonPost('/LuckyDraw/DoShareLuckDraw',{key:"9d543254-851c-4750-a893-05fa565d6a91"}))
-}
-// 助力抽奖
-function DoShareLuckDraw(a,b) {
-    token = a;
-    refreshToken = b
-}
 
 
 async function commonPost(url, body = {}) {
@@ -237,22 +253,26 @@ async function commonPost(url, body = {}) {
         }
         $.post(options, async (err, resp, data) => {
             try {
-                if (err) {
-                    if (data) {
-                        resolve(JSON.parse(data));
-                    } else {
-                        console.log(`${JSON.stringify(err)}`)
-                        console.log(`${$.name} API请求失败，请检查网路重试`)
-                    }
+                if (resp.statusCode == 401 || resp.statusCode == 400 ) {
+                    resolve({Code: 401});
                 } else {
-                    const token1 = resp.headers["Authorization"] || resp.headers["authorization"];
-                    const refreshToken1 = resp.headers["X-Authorization"] || resp.headers["x-authorization"];
-                    if (token1 && refreshToken1) {
-                        token = token1
-                        refreshToken = token1
+                    if (err) {
+                        if (data) {
+                            resolve(JSON.parse(data));
+                        } else {
+                            console.log(`${JSON.stringify(err)}`)
+                            console.log(`${$.name} API请求失败，请检查网路重试`)
+                        }
+                    } else {
+                        const token1 = resp.headers["access-token"] || resp.headers["Access-Token"];
+                        const refreshToken1 = resp.headers["x-Access-Token"] || resp.headers["x-access-token"];
+                        if (token1 && refreshToken1) {
+                            token = token1
+                            refreshToken = token1
+                        }
+                        await $.wait(1000)
+                        resolve(JSON.parse(data));
                     }
-                    await $.wait(1000)
-                    resolve(JSON.parse(data));
                 }
             } catch (e) {
                 $.logErr(e, resp)
