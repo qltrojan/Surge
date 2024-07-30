@@ -7,6 +7,7 @@ const YiLi = ($.isNode() ? JSON.parse(process.env.YiLi) : $.getjson("YiLi")) || 
 let Utils = undefined;
 let token = ''
 let teamId = ''
+let createTeam = true
 let notice = ''
 !(async () => {
     if (typeof $request != "undefined") {
@@ -32,9 +33,12 @@ async function main() {
             let browse = await commonPost('/task',{"type":2})
             console.log(`浏览：${browse.msg}`)
         }
-        if (qryUserInfo.data.isTeam == 0) {
+        if (qryUserInfo.data.isTeam == 0 && createTeam) {
             let addTeam = await commonPost('/addTeam',{"name":qryUserInfo.data.nickName})
             console.log(`创建小队：${addTeam.msg}`)
+            createTeam = false
+        } else {
+            createTeam = false
         }
         let qryTeam = await commonPost('/qryTeam',{})
         if (!teamId) {
