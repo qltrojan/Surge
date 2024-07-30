@@ -61,7 +61,7 @@ async function main() {
                 if (task.taskDetail == task.totalDetail) {
                     console.log('任务已完成')
                 } else {
-                    let add = await commonPost('/api/task/add-task-rate-v3',`taskDetail=${task.totalDetail - task.taskDetail}&taskCode=${task.taskCode}&finishType=0`)
+                    let add = await commonPost('/api/task/add-task-rate-v4',`taskDetail=${task.totalDetail - task.taskDetail}&taskCode=${task.taskCode}&finishType=0`)
                     console.log('获得积分：' + add.data.info)
                 }
             }
@@ -92,7 +92,7 @@ async function loginPost(url,body) {
                 'sign': params.sign,
                 'plat': '1',
                 'time': params.time,
-                'version': '3.2.0',
+                'version': '3.2.3',
                 'deviceCode': deviceCode,
                 'Content-Type': 'application/json; charset=utf-8',
                 'Connection': 'Keep-Alive',
@@ -129,7 +129,7 @@ async function commonPost(url,body) {
                 'sign': params.sign,
                 'plat': '1',
                 'time': params.time,
-                'version': '3.2.0',
+                'version': '3.2.3',
                 'deviceCode': deviceCode,
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Connection': 'Keep-Alive',
@@ -167,7 +167,7 @@ async function generalKeyGet(url) {
                 'sign': sign,
                 'plat': '1',
                 'time': time,
-                'version': '3.2.0',
+                'version': '3.2.3',
                 'deviceCode': deviceCode,
                 'Connection': 'Keep-Alive',
                 'Accept-Encoding': 'gzip',
@@ -202,7 +202,7 @@ async function commonGet(url,body = '') {
                 'sign': params.sign,
                 'plat': '1',
                 'time': params.time,
-                'version': '3.2.0',
+                'version': '3.2.3',
                 'deviceCode': deviceCode,
                 'Connection': 'Keep-Alive',
                 'Accept-Encoding': 'gzip',
