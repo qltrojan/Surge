@@ -239,7 +239,7 @@ async function commonGet(url) {
     })
 }
 
-async function helpPost(url,body = '') {
+async function helpPost(url,body) {
     return new Promise(resolve => {
         const options = {
             url: `https://cmallapi.haday.cn/buyer-api${url}`,
