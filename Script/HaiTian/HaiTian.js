@@ -1,23 +1,19 @@
 /**
  * cron "43 2,20 * * *" HaiTian.js
- * export HaiTian='[{"id":"1","token":"1","hadayToken":"1","uuid":"1"},{"id":"2","token":"2","hadayToken":"2","uuid":"2"}]'
+ * export HaiTian='[{"id":"1","uuid":"1","token":"1","refreshToken":"1"},{"id":"2","uuid":"2","token":"2","refreshToken":"2"}]'
  */
 const $ = new Env('海天美味馆')
 const HaiTian = ($.isNode() ? JSON.parse(process.env.HaiTian) : $.getjson("HaiTian")) || [];
 let shareCodeArr = []
 let token = ''
+let refreshToken = ''
 let hadayToken = ''
 let uuid = ''
 let notice = ''
 let activityId = 'jfcj0727'
 !(async () => {
     if (typeof $request != "undefined") {
-        if ($request.url.includes('cmallapi')) {
-            await getToken();
-        }
-        if ($request.url.includes('cmallwap')) {
-            await getHadayToken();
-        }
+        await getToken();
     } else {
         await main();
     }
@@ -28,12 +24,27 @@ async function main() {
     for (const item of HaiTian) {
         id = item.id;
         token = item.token;
-        hadayToken = item.hadayToken;
+        refreshToken = item.refreshToken;
         uuid = item.uuid;
         let activityInfo = await commonGet('/sign/activity/code?activityCode=')
         if (activityInfo.code == 403) {
-            await sendMsg(`用户：${id}\ntoken已过期，请重新获取`);
-            continue
+            console.log('token已过期,开始刷新')
+            let refresh = await helpPost(`/passport/token`, `refresh_token=${refreshToken}`)
+            if (refresh.accessToken) {
+                token = refresh.accessToken;
+                refreshToken = refresh.refreshToken;
+                console.log('刷新成功')
+                const newData = {"id": id, "uuid": uuid, "token": token, "refreshToken":refreshToken};
+                const index = HaiTian.findIndex(e => e.id == id);
+                if (index !== -1) {
+                    HaiTian[index] = newData;
+                }
+                $.setjson(HaiTian, "HaiTian");
+            } else {
+                console.log('刷新失败')
+                await sendMsg(`用户：${id}\ntoken已过期，请重新获取`);
+                continue
+            }
         }
         let shareCode = await commonGet(`/lucky/task/share/code/${activityId}`)
         console.log(`助力码：${shareCode.share_code}`)
@@ -42,14 +53,29 @@ async function main() {
     for (const item of HaiTian) {
         id = item.id;
         token = item.token;
-        hadayToken = item.hadayToken;
+        refreshToken = item.refreshToken;
         uuid = item.uuid;
         console.log(`用户：${id}开始任务`)
         console.log('每日签到')
         let activityInfo = await commonGet('/sign/activity/code?activityCode=')
         if (activityInfo.code == 403) {
-            await sendMsg(`用户：${id}\ntoken已过期，请重新获取`);
-            continue
+            console.log('token已过期,开始刷新')
+            let refresh = await helpPost(`/passport/token`,`refresh_token=${refreshToken}`)
+            if (refresh.accessToken) {
+                token = refresh.accessToken;
+                refreshToken = refresh.refreshToken;
+                console.log('刷新成功')
+                const newData = {"id": id, "uuid": uuid, "token": token, "refreshToken":refreshToken};
+                const index = HaiTian.findIndex(e => e.id == id);
+                if (index !== -1) {
+                    HaiTian[index] = newData;
+                }
+                $.setjson(HaiTian, "HaiTian");
+            } else {
+                console.log('刷新失败')
+                await sendMsg(`用户：${id}\ntoken已过期，请重新获取`);
+                continue
+            }
         }
         let memberInfo = await commonGet(`/sign/activity/member/info?activityCode=${activityInfo.activity_code}`)
         if (memberInfo.is_sign) {
@@ -62,10 +88,13 @@ async function main() {
                 console.log(sign.message)
             }
         }
-        console.log('答题')
-        let getTodayQuizQuestion = await commonGet('/quiz/getTodayQuizQuestion?id=13')
-        let answers = getTodayQuizQuestion.data.answers;
-        let doAnswer = await commonPost(`/quiz/doAnswer?quiz_id=${getTodayQuizQuestion.data.quiz_id}&quiz_question_id=${getTodayQuizQuestion.data.id}&answer=0,1,2,3`,{})
+        console.log('获取hadayToken')
+        let login = await cmallwapPost('/haday/wx/auth/loginByToken',{"access_token":token})
+        hadayToken = login.data;
+        // console.log('答题')
+        // let getTodayQuizQuestion = await commonGet('/quiz/getTodayQuizQuestion?id=13')
+        // let answers = getTodayQuizQuestion.data.answers;
+        // let doAnswer = await commonPost(`/quiz/doAnswer?quiz_id=${getTodayQuizQuestion.data.quiz_id}&quiz_question_id=${getTodayQuizQuestion.data.id}&answer=0,1,2,3`,{})
         console.log('浏览页面')
         let browsePage = await commonPost('/members/browsePage',{})
         console.log(browsePage.message)
@@ -76,9 +105,6 @@ async function main() {
         let list = await cmallwapPost('/haday/wx/blog/nolikeList?pageSize=10&pageNum=1&types=1&essence=1&showAllUser=1',{})
         let articleId = list.data.rows[0].id
         let adComment = await cmallwapPost('/haday/wx/comment/add',{"blogId":articleId,"comment":"每天一条走心评论。。。","pcommentId":"","pcommentUserId":"","pcommentUserName":"","pparentId":""})
-        if (adComment.statusCode == 403) {
-            await sendMsg(`用户：${id}\nhadayToken已过期，请重新获取`);
-        }
         console.log(adComment.errorMsg)
         console.log('关注官号')
         let follow = await cmallwapPost('/haday/wx/like/follow',{"likeUserId":"2f03a8263da24c7dafb6afc703eadf2c"})
@@ -141,17 +167,18 @@ async function main() {
 }
 
 async function getToken() {
-    const token = $request.headers["Authorization"] || $request.headers["authorization"];
     const uuid = $request.headers["uuid"] || $request.headers["uuid"];
-    if (!token || !uuid) {
+    if (!uuid) {
         return
     }
     const body = $.toObj($response.body);
-    if (!body|| !body.mobile) {
+    if (!body|| !body.uid) {
         return
     }
-    const id = body.mobile;
-    const newData = {"id": id, "token": token, "hadayToken": "","uuid": uuid};
+    const id = body.uid;
+    const token = body.access_token;
+    const refreshToken = body.refresh_token;
+    const newData = {"id": id, "uuid": uuid, "token": token, "refreshToken":refreshToken};
     const index = HaiTian.findIndex(e => e.id == newData.id);
     if (index !== -1) {
         if (HaiTian[index].token == newData.token) {
@@ -165,32 +192,6 @@ async function getToken() {
         HaiTian.push(newData)
         console.log(newData.token)
         $.msg($.name, `🎉新增用户${newData.id}成功!`, ``);
-    }
-    $.setjson(HaiTian, "HaiTian");
-}
-
-async function getHadayToken() {
-    const hadayToken = $request.headers["X-Haday-Token"] || $request.headers["x-haday-token"];
-    const uuid = $request.headers["uuid"] || $request.headers["uuid"];
-    if (!hadayToken || !uuid) {
-        return
-    }
-    const body = $.toObj($response.body);
-    if (!body|| !body.data) {
-        return
-    }
-    const id = body.data.mobile;
-    const index = HaiTian.findIndex(e => e.id == id);
-    if (index !== -1) {
-        if (HaiTian[index].hadayToken == hadayToken) {
-            return
-        } else {
-            HaiTian[index].hadayToken = hadayToken;
-            console.log(hadayToken)
-            $.msg($.name, `🎉用户${id}更新hadayToken成功!`, ``);
-        }
-    } else {
-        $.msg($.name, `请先获取token`, ``);
     }
     $.setjson(HaiTian, "HaiTian");
 }
@@ -238,7 +239,7 @@ async function commonGet(url) {
     })
 }
 
-async function helpPost(url) {
+async function helpPost(url,body) {
     return new Promise(resolve => {
         const options = {
             url: `https://cmallapi.haday.cn/buyer-api${url}`,
@@ -256,7 +257,8 @@ async function helpPost(url) {
                 'Referer': 'https://servicewechat.com/wx7a890ea13f50d7b6/597/page-frame.html',
                 'Accept-Encoding': 'gzip, deflate, br',
                 'Accept-Language': 'zh-CN,zh;q=0.9'
-            }
+            },
+            body: body
         }
         $.post(options, async (err, resp, data) => {
             try {

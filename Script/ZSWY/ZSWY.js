@@ -1,5 +1,5 @@
 /**
- * cron "0 7,17 * * *" ZSWY.js
+ * cron "0 7,8,17 * * *" ZSWY.js
  * export ZSWY="账号1&密码1 账号2&密码2"
  * export OCR_SERVER="ocr服务"
  */
