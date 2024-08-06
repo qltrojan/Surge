@@ -1,6 +1,7 @@
 /**
  * cron "10,30 9 * * *" ZSJD.js
- * export ZSJD="accountId&token accountId&token"
+ * 抓包：https://op-api.cloud.jinhua.com.cn/api/
+ * export ZSJD="Access-Auth-Id&Access-Api-Token Access-Auth-Id&Access-Api-Token"
  * export OCR_SERVER="ocr服务"
  */
 const $ = new Env('掌上金东')
