@@ -1,6 +1,10 @@
 //Tue Aug 06 2024 14:53:30 GMT+0000 (Coordinated Universal Time)
 //Base:https://github.com/echo094/decode-js
 //Modify:https://github.com/smallfawn/decode_action
+/**
+ * cron "10 9,19 * * *" LanJingLing.js
+ * export LanJingLing="账号1&密码1&支付宝姓名1&支付宝账号1 账号2&密码2&支付宝姓名2&支付宝账号2"
+ */
 const $ = new Env("兰精灵");
 const notify = $.isNode() ? require("../sendNotify") : "";
 (() => {
